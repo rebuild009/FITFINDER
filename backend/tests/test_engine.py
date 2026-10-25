@@ -96,3 +96,12 @@ def test_dress_needs_all_three_girths_to_fit():
     bad_hips = fit_product("dress", chart, {"chest": 127, "waist": 116, "hips": 150})
     assert good.verdict == "true_fit"
     assert bad_hips.verdict == "no_fit"
+
+
+def test_notes_use_the_shoppers_unit():
+    d = evaluate_dimension("chest", 115.08, 106, 112, unit="in")
+    assert d.note == "1.2 in tighter than this size is cut for"
+    h = evaluate_dimension("height", 198, 163, 186, unit="in")
+    assert "6′1″" in h.note
+    fit = fit_product("shirt", SHIRT_CHART, {"chest": 140, "shoulder": 55}, unit="in")
+    assert "50 in" in fit.summary

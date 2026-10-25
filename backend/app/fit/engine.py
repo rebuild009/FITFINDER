@@ -27,6 +27,9 @@ PREF_TARGET = {"snug": 0.75, "regular": 0.5, "relaxed": 0.25}
 TIGHT_ALLOWANCE = {"snug": 1.3, "regular": 1.0, "relaxed": 0.8}
 LOOSE_ALLOWANCE = {"snug": 1.0, "regular": 1.6, "relaxed": 2.5}
 
+# Differences smaller than this are below measuring-tape accuracy and count as in range.
+GRACE_CM = 0.5
+
 # Average inseam is about 45% of height; used only when the inseam itself is unknown.
 INSEAM_PER_HEIGHT = 0.45
 
@@ -80,12 +83,22 @@ class FitResult:
         return asdict(self)
 
 
-def _cm(value: float) -> str:
-    text = f"{value:.1f}".rstrip("0").rstrip(".")
+def _len(cm: float, unit: str = "cm", dim: str = "") -> str:
+    """Format a length for notes in the shopper's own unit."""
+    if unit == "in":
+        inches = cm / 2.54
+        if dim == "height":
+            ft, rest = divmod(round(inches), 12)
+            return f"{ft}′{rest}″"
+        text = f"{inches:.1f}".rstrip("0").rstrip(".")
+        return f"{text} in"
+    text = f"{cm:.1f}".rstrip("0").rstrip(".")
     return f"{text} cm"
 
 
-def evaluate_dimension(dim: str, body: float, lo: float, hi: float, pref: str = "regular") -> DimensionFit:
+def evaluate_dimension(
+    dim: str, body: float, lo: float, hi: float, pref: str = "regular", unit: str = "cm"
+) -> DimensionFit:
     """Score one body measurement against the range a size is cut for."""
     if lo > hi:
         lo, hi = hi, lo
@@ -94,9 +107,9 @@ def evaluate_dimension(dim: str, body: float, lo: float, hi: float, pref: str = 
     label = DIM_LABELS.get(dim, dim.title())
     is_girth = dim in GIRTH_DIMS
 
-    if lo <= body <= hi:
+    if lo - GRACE_CM <= body <= hi + GRACE_CM:
         width = hi - lo
-        pos = 0.5 if width <= 0 else (body - lo) / width
+        pos = 0.5 if width <= 0 else min(1.0, max(0.0, (body - lo) / width))
         # Where you sit inside a girth range is a matter of taste; inside a length range it just fits.
         score = 1.0 - 0.15 * abs(pos - PREF_TARGET[pref]) / 0.75 if is_girth else 1.0
         if is_girth:
@@ -111,12 +124,12 @@ def evaluate_dimension(dim: str, body: float, lo: float, hi: float, pref: str = 
         if is_girth:
             allow = tol * TIGHT_ALLOWANCE[pref]
             status = "snug" if over <= allow else "too_tight"
-            note = f"{_cm(over)} tighter than this size is cut for"
+            note = f"{_len(over, unit)} tighter than this size is cut for"
         else:
             allow = tol
             status = "short" if over <= allow else "too_short"
             note = (
-                f"Inseam {_cm(over)} short" if dim == "inseam" else f"Cut for up to {_cm(hi)} tall; may ride short"
+                f"Inseam {_len(over, unit)} short" if dim == "inseam" else f"Cut for up to {_len(hi, unit, dim)} tall; may ride short"
             )
         score = 0.85 * max(0.0, 1 - over / (2 * allow))
         return DimensionFit(dim, label, round(body, 1), (lo, hi), status, round(over, 1), round(score, 3), note)
@@ -125,12 +138,16 @@ def evaluate_dimension(dim: str, body: float, lo: float, hi: float, pref: str = 
     if is_girth:
         allow = tol * LOOSE_ALLOWANCE[pref]
         status = "loose" if under <= allow else "too_loose"
-        note = f"{_cm(under)} looser than this size is cut for"
+        note = f"{_len(under, unit)} looser than this size is cut for"
         score = 0.85 * max(0.0, 1 - under / (2.5 * allow))
     else:
         allow = tol * 1.5
         status = "long" if under <= allow else "too_long"
-        note = f"Inseam {_cm(under)} long, can be hemmed" if dim == "inseam" else f"Cut for {_cm(lo)}+ tall; may sit long"
+        note = (
+            f"Inseam {_len(under, unit)} long, can be hemmed"
+            if dim == "inseam"
+            else f"Cut for {_len(lo, unit, dim)} and taller; may sit long"
+        )
         floor = 0.45 if dim == "inseam" else 0.3
         score = max(floor, 0.85 * max(0.0, 1 - under / (3 * allow)))
     return DimensionFit(dim, label, round(body, 1), (lo, hi), status, round(-under, 1), round(score, 3), note)
@@ -147,7 +164,12 @@ def with_estimates(body: dict) -> tuple[dict, set[str]]:
 
 
 def score_size(
-    category: str, size_ranges: dict, body: dict, pref: str = "regular", estimated: set[str] | frozenset = frozenset()
+    category: str,
+    size_ranges: dict,
+    body: dict,
+    pref: str = "regular",
+    estimated: set[str] | frozenset = frozenset(),
+    unit: str = "cm",
 ) -> SizeFit | None:
     """Score one size. Returns None when no primary dimension can be compared."""
     weights = CATEGORY_WEIGHTS.get(category, {})
@@ -159,7 +181,7 @@ def score_size(
         value = body.get(dim)
         if rng is None or value is None or value <= 0:
             continue
-        d = evaluate_dimension(dim, float(value), float(rng[0]), float(rng[1]), pref)
+        d = evaluate_dimension(dim, float(value), float(rng[0]), float(rng[1]), pref, unit)
         if dim in tight_only and d.status in ("loose", "too_loose"):
             d.status, d.score, d.note = "good", 0.95, "Roomy here, which is fine for this cut"
         if dim in estimated:
@@ -196,6 +218,7 @@ def fit_product(
     body: dict,
     pref: str = "regular",
     sizes_available: list[str] | None = None,
+    unit: str = "cm",
 ) -> FitResult:
     """Find the best size of a product for a body. `body` holds centimetres per dimension."""
     sizes = size_chart.get("sizes", []) if size_chart else []
@@ -215,7 +238,7 @@ def fit_product(
 
     scored: list[SizeFit] = []
     for s in sizes:
-        fit = score_size(category, s.get("measurements", {}), body, pref, estimated)
+        fit = score_size(category, s.get("measurements", {}), body, pref, estimated, unit)
         if fit is not None:
             fit.size = s["label"]
             scored.append(fit)
@@ -250,7 +273,7 @@ def fit_product(
             d = tight[0]
             largest = max(sizes, key=lambda s: s.get("measurements", {}).get(d.dimension, (0, 0))[1])
             top = largest["measurements"][d.dimension][1]
-            summary = f"Sizes stop at {largest['label']} ({d.label.lower()} up to {_cm(top)})"
+            summary = f"Sizes stop at {largest['label']} ({d.label.lower()} up to {_len(top, unit)})"
 
     alternatives = [
         {"size": f.size, "score": f.score, "verdict": _verdict(f.score)[0]}
@@ -271,12 +294,12 @@ def fit_product(
     )
 
 
-def fit_all_sizes(category: str, size_chart: dict, body: dict, pref: str = "regular") -> list[dict]:
+def fit_all_sizes(category: str, size_chart: dict, body: dict, pref: str = "regular", unit: str = "cm") -> list[dict]:
     """Per-size breakdown for the product detail view."""
     out = []
     body, estimated = with_estimates(body)
     for s in (size_chart or {}).get("sizes", []):
-        fit = score_size(category, s.get("measurements", {}), body, pref, estimated)
+        fit = score_size(category, s.get("measurements", {}), body, pref, estimated, unit)
         row = {"size": s["label"], "measurements": s.get("measurements", {})}
         if fit is None:
             row.update(score=None, verdict="needs_measurements", dimensions=[])

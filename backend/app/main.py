@@ -113,11 +113,16 @@ def _get_product(session: Session, product_id: int) -> Product:
 def _detail(product: Product, profile: FitProfile | None) -> ProductDetail:
     body = profile.body_cm() if profile else {}
     pref = profile.fit_preference if profile else "regular"
+    unit = profile.unit if profile else "cm"
     fit = None
     if body:
-        fit = FitOut(**fit_product(product.category, product.size_chart, body, pref, product.sizes_available).to_dict())
+        result = fit_product(product.category, product.size_chart, body, pref, product.sizes_available, unit)
+        fit = FitOut(**result.to_dict())
     in_stock = set(product.sizes_available or [])
-    rows = [SizeRow(**row, in_stock=row["size"] in in_stock) for row in fit_all_sizes(product.category, product.size_chart, body, pref)]
+    rows = [
+        SizeRow(**row, in_stock=row["size"] in in_stock)
+        for row in fit_all_sizes(product.category, product.size_chart, body, pref, unit)
+    ]
     return ProductDetail(
         product=ProductOut.model_validate(product),
         size_chart_source=(product.size_chart or {}).get("source", "standard"),

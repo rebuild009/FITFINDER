@@ -45,7 +45,8 @@ BRANDS = [
     },
     {
         "slug": "broadline", "name": "Broadline", "offset": 0,
-        "sizes": {"men": ("2XL", "7XL")}, "waist": {"men": (38, 56)}, "inseams": {"men": ["R", "L"]},
+        "sizes": {"men": ("2XL", "7XL")}, "height": {"men": (170, 198)},
+        "waist": {"men": (38, 56)}, "inseams": {"men": ["R", "L"]},
         "cats": {"men": ["shirt", "tshirt", "jacket", "jeans", "trousers"]},
         "price": (1499, 4999), "tags": ["big-and-tall", "plus-size"],
         "blurb": "Big-and-tall essentials from 2XL to 7XL.",
@@ -313,7 +314,7 @@ def generate(seed: int = 42) -> dict:
             for category in cats:
                 templates = TEMPLATES[category][:]
                 rng.shuffle(templates)
-                count = brand.get("per_category", rng.choice([2, 2, 3]))
+                count = brand.get("per_category", rng.choice([3, 3, 4]))
                 for title, materials, desc, fit_tag in templates[:count]:
                     palette = DENIM_COLORS if "denim" in materials else COLORS
                     colors = rng.sample(palette, rng.choice([1, 2, 3]))

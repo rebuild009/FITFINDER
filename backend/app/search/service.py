@@ -143,11 +143,14 @@ def run_search(
             applied.keywords = []
 
     body = applied.measurements_cm
+    unit = profile.unit if profile else "cm"
     items: list[MatchItem] = []
     for product, rel in scored:
         fit = None
         if body:
-            result = fit_product(product.category, product.size_chart, body, applied.fit_preference, product.sizes_available)
+            result = fit_product(
+                product.category, product.size_chart, body, applied.fit_preference, product.sizes_available, unit
+            )
             fit = FitOut(**result.to_dict())
         items.append(MatchItem(product=ProductOut.model_validate(product), fit=fit, relevance=rel))
 

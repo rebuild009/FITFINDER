@@ -1,16 +1,24 @@
-# React + Vite
+# Frontend: React + Vite + Tailwind
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+```bash
+npm install
+npm run dev        # http://localhost:5173, proxies /api to the backend on :8000
+npm run build      # production build in dist/
+npm run lint
+```
 
-Currently, two official plugins are available:
+## Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `src/App.jsx`: page layout, search state, and requests
+- `src/components/ProfileCard.jsx`: measurements (cm or inches), fit preference, and sample bodies. Saved in localStorage.
+- `src/components/SearchBar.jsx`: natural-language search, plus a "Reading this as" breakdown of what was understood
+- `src/components/FilterBar.jsx`: category, price, sort, and the "Only what fits me" toggle
+- `src/components/ProductCard.jsx`: recommended size, verdict, and the deciding measurement as a tape
+- `src/components/FitTape.jsx`: the tape-measure strip, showing the size's range against your body
+- `src/components/ProductDrawer.jsx`: every measurement for the chosen size, every size checked, and the size chart
+- `src/components/GarmentArt.jsx`: flat garment drawings for demo products without photos
+- `src/lib/`: API client, unit conversion, profile storage, and display helpers
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Design tokens (colours, type) live in `src/index.css` under `@theme`. The typeface is Archivo, bundled
+through `@fontsource-variable/archivo` so the app works offline. Expanded widths are used for headings
+and condensed widths for size labels.
