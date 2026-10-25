@@ -1,0 +1,4 @@
+__pycache__/
+output/
+stores.json
+.pytest_cache/

@@ -1,0 +1,12 @@
+{
+  "stores": [
+    {
+      "domain": "your-store.myshopify.com",
+      "name": "Example Store",
+      "gender": "unisex",
+      "currency": "INR",
+      "max_pages": 4,
+      "tags": ["plus-size"]
+    }
+  ]
+}
