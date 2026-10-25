@@ -99,6 +99,9 @@ def test_robots_disallow_is_respected():
 
 
 def test_output_is_accepted_by_backend_ingest():
+    """Contract test with the backend. Runs when the backend's requirements are installed too."""
+    pytest.importorskip("sqlalchemy")
+    pytest.importorskip("pydantic_settings")
     sys.path.insert(0, str(BACKEND))
     try:
         from app.ingest import validate
