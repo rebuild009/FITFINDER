@@ -1,0 +1,17 @@
+# Optional: PostgreSQL for local development. SQLite works without it.
+#   docker compose up -d db
+#   DATABASE_URL=postgresql://fitfinder:fitfinder@localhost:5432/fitfinder
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: fitfinder
+      POSTGRES_PASSWORD: fitfinder
+      POSTGRES_DB: fitfinder
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
