@@ -38,3 +38,19 @@ profile's unit.
 - `app/search/service.py`: filtering, relevance, fit ranking
 - `app/ingest.py` / `app/cli.py`: load the demo catalog or scraper output (`python -m app.cli ingest FILE`)
 - `app/seed/generate.py`: regenerates `data/seed_catalog.json` (fictional brands)
+
+## Parser accuracy
+
+`tests/eval/` holds 140 hand-labelled shopper queries (English, Hinglish, typos,
+Indian garment names). Every field is checked, and stray extra readings count as errors.
+
+```
+python -m tests.eval.run_parser_eval -v
+```
+
+| Set | Before v2 | After v2 |
+| --- | --- | --- |
+| `queries.jsonl` (100, used while fixing) | 77% | 100% |
+| `holdout.jsonl` (40, written before fixing) | 35% | 95% on first run, 100% after two more fixes |
+
+Quote the held-out first-run figure (38/40) as the honest generalisation number.

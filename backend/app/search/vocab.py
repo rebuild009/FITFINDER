@@ -1,23 +1,27 @@
 """Words the search understands. Shared by the rule parser and the result filters."""
 
 CATEGORY_SYNONYMS = {
-    "tshirt": ["t-shirt", "t-shirts", "t shirt", "t shirts", "tshirt", "tshirts", "tee", "tees", "henley", "henleys"],
+    "tshirt": ["t-shirt", "t-shirts", "t shirt", "t shirts", "tshirt", "tshirts", "tee", "tees", "henley", "henleys",
+               "vest", "vests", "tshrit", "tshrits", "t-shrit", "t shrit"],
     "shirt": ["shirt", "shirts", "button-down", "button down", "button-up"],
     "polo": ["polo", "polos", "polo shirt", "polo shirts", "polo t-shirt"],
     "hoodie": ["hoodie", "hoodies", "hoody", "sweatshirt", "sweatshirts"],
     "jacket": ["jacket", "jackets", "blazer", "blazers", "bomber", "bombers", "coat", "coats"],
-    "kurta": ["kurta", "kurtas", "kurti", "kurtis"],
-    "top": ["top", "tops", "blouse", "blouses", "tank top", "tank", "tanks", "cami"],
-    "jeans": ["jeans", "jean", "denims"],
-    "trousers": ["trousers", "trouser", "pants", "pant", "chinos", "chino", "slacks", "formals"],
-    "joggers": ["joggers", "jogger", "trackpants", "track pants", "trackpant", "sweatpants", "lowers"],
+    "kurta": ["kurta", "kurtas", "kurti", "kurtis", "kurtha", "kurthas", "kurta set", "kurta sets", "kurti set"],
+    "top": ["top", "tops", "tunic", "tunics", "blouse", "blouses", "tank top", "tank", "tanks", "cami"],
+    "jeans": ["jeans", "jean", "denims", "jens", "jeens"],
+    "trousers": ["trousers", "trouser", "pants", "pant", "chinos", "chino", "slacks", "formals",
+                 "palazzo", "palazzos", "leggings", "legging", "jeggings", "cargo", "cargos", "cargo pants"],
+    "joggers": ["joggers", "jogger", "trackpants", "track pants", "trackpant", "track pant", "jogger pants", "sweatpants", "lowers"],
     "shorts": ["shorts", "bermudas"],
     "dress": ["dress", "dresses", "gown", "gowns", "maxi dress", "midi dress"],
 }
 
 GENDER_WORDS = {
-    "men": ["men", "mens", "men's", "man", "male", "guy", "guys", "boys", "gents", "him", "husband", "dad"],
-    "women": ["women", "womens", "women's", "woman", "female", "ladies", "lady", "girls", "her", "wife", "mom"],
+    "men": ["men", "mens", "men's", "man", "male", "guy", "guys", "boy", "boys", "gent", "gents", "him", "husband", "dad",
+            "mard", "mardon", "mardo", "ladka", "ladke", "ladko", "ladkon", "aadmi", "purush"],
+    "women": ["women", "womens", "women's", "woman", "female", "ladies", "lady", "girl", "girls", "her", "wife", "mom",
+              "ladki", "ladkiyan", "ladkiyon", "ladkiyo", "aurat", "aurton", "auraton", "mahila", "mahilaon"],
     "unisex": ["unisex"],
 }
 
@@ -83,6 +87,8 @@ STOPWORDS = {
     "x", "by", "from", "at", "it", "its", "this", "these", "those", "big", "large", "small", "extra", "plus",
     "very", "really", "am", "m", "needs", "needed", "wants", "wanted", "searching", "suggest", "recommend",
     "should", "would", "will", "dont", "not", "also", "only", "just", "someone", "person", "people",
+    # Hindi/Hinglish glue words
+    "ke", "ki", "ka", "liye", "ko", "se", "wala", "wali", "wale", "chahiye", "kam",
 }
 
 # Inch values below these are read as inches when the query gives no unit.
