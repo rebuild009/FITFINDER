@@ -20,6 +20,8 @@ different brands; FitFinder compares measurements, not labels.
   2XL–10XL), Janasya and Angrakhaa (women, up to 7XL), with 98% of size charts taken from the brand
   itself. Collected 19 Nov 2026 with `scraper/stores.india.json`. The original synthetic catalog of
   8 fictional brands is still available with `CATALOG=demo`.
+- **Evaluation on real data**: True-Fit run on 6,068 real bodies (ANSUR II) against the real catalog's
+  brand charts. See [docs/real_evaluation.md](docs/real_evaluation.md).
 - **Web app**: React + Tailwind, with a measurement card, search, fit-ranked results, and a per-size
   breakdown drawn as measuring tape.
 
