@@ -1,7 +1,7 @@
 """Command line helpers.
 
     python -m app.cli init-db              create tables
-    python -m app.cli seed                 load the demo catalog
+    python -m app.cli seed [real|demo]     load the real-store catalog (default) or the synthetic demo
     python -m app.cli ingest FILE [FILE]   load scraper output
     python -m app.cli stats                product counts
 """
@@ -11,7 +11,7 @@ import sys
 from sqlalchemy import func, select
 
 from .db import SessionLocal, init_db
-from .ingest import SEED_PATH, ingest_file
+from .ingest import CATALOGS, ingest_file
 from .models import Product
 
 
@@ -25,7 +25,7 @@ def main(argv: list[str]) -> int:
         if cmd == "init-db":
             print("Tables ready.")
         elif cmd == "seed":
-            print(ingest_file(session, SEED_PATH))
+            print(ingest_file(session, CATALOGS[args[0] if args else "real"]))
         elif cmd == "ingest":
             for path in args:
                 print(path, ingest_file(session, path))

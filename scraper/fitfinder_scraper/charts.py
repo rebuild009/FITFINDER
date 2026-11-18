@@ -162,41 +162,53 @@ def chart_from_html(body_html: str, category: str) -> dict | None:
         return None
     soup = BeautifulSoup(body_html, "html.parser")
     page_text = soup.get_text(" ", strip=True)
-    garment = bool(re.search(r"garment|product\s+measurement|flat\s+measurement|laid\s+flat", page_text, re.I))
+    garment = bool(_GARMENT.search(page_text))
     for table in soup.find_all("table"):
-        data = _read_table(_table_rows(table))
-        if len(data) < 2:
-            continue
-        all_values = [n for dims in data.values() for nums, _ in dims.values() for n in nums]
-        unit = _guess_unit(table.get_text(" ", strip=True) + " " + page_text[:400], all_values)
-        factor = CM if unit == "in" else 1.0
+        chart = chart_from_rows(_table_rows(table), category, table.get_text(" ", strip=True) + " " + page_text[:400], garment)
+        if chart:
+            return chart
+    return None
 
-        # Convert every cell to a (lo, hi) body range in cm.
-        per_dim: dict[str, list[tuple[str, float, float | None]]] = {}
-        for label, dims in data.items():
-            for dim, (nums, half) in dims.items():
-                vals = [n * factor * (2 if half else 1) for n in nums[:2]]
-                if garment:
-                    vals = [v - _EASE[dim] for v in vals]
-                per_dim.setdefault(dim, []).append((label, vals[0], vals[1] if len(vals) > 1 else None))
 
-        sizes: dict[str, dict] = {label: {} for label in data}
-        for dim, cells in per_dim.items():
-            # Single values become ranges that meet halfway between neighbouring sizes.
-            singles = sorted((v, label) for label, v, hi in cells if hi is None)
-            for i, (v, label) in enumerate(singles):
-                prev_v = singles[i - 1][0] if i > 0 else None
-                next_v = singles[i + 1][0] if i + 1 < len(singles) else None
-                gap = next_v - v if next_v is not None else (v - prev_v if prev_v is not None else 4.0)
-                lo = (prev_v + v) / 2 if prev_v is not None else v - gap / 2
-                hi = (next_v + v) / 2 if next_v is not None else v + gap / 2
-                sizes[label][dim] = [round(lo, 1), round(hi, 1)]
-            for label, lo, hi in cells:
-                if hi is not None:
-                    sizes[label][dim] = [round(min(lo, hi), 1), round(max(lo, hi), 1)]
+_GARMENT = re.compile(r"garment|product\s+measurement|flat\s+measurement|laid\s+flat", re.I)
 
-        primary = "waist" if category in ("jeans", "trousers", "joggers", "shorts") else "chest"
-        rows = [{"label": label, "measurements": m} for label, m in sizes.items() if primary in m]
-        if len(rows) >= 2:
-            return {"unit": "cm", "source": "product", "sizes": rows}
+
+def chart_from_rows(rows: list[list[str]], category: str, context: str = "", garment: bool = False,
+                    unit: str | None = None, source: str = "product") -> dict | None:
+    """Turn a size table (rows of cell text, either orientation) into body ranges in cm."""
+    data = _read_table(rows)
+    if len(data) < 2:
+        return None
+    all_values = [n for dims in data.values() for nums, _ in dims.values() for n in nums]
+    unit = unit or _guess_unit(context, all_values)
+    factor = CM if unit == "in" else 1.0
+
+    # Convert every cell to a (lo, hi) body range in cm.
+    per_dim: dict[str, list[tuple[str, float, float | None]]] = {}
+    for label, dims in data.items():
+        for dim, (nums, half) in dims.items():
+            vals = [n * factor * (2 if half else 1) for n in nums[:2]]
+            if garment:
+                vals = [v - _EASE[dim] for v in vals]
+            per_dim.setdefault(dim, []).append((label, vals[0], vals[1] if len(vals) > 1 else None))
+
+    sizes: dict[str, dict] = {label: {} for label in data}
+    for dim, cells in per_dim.items():
+        # Single values become ranges that meet halfway between neighbouring sizes.
+        singles = sorted((v, label) for label, v, hi in cells if hi is None)
+        for i, (v, label) in enumerate(singles):
+            prev_v = singles[i - 1][0] if i > 0 else None
+            next_v = singles[i + 1][0] if i + 1 < len(singles) else None
+            gap = next_v - v if next_v is not None else (v - prev_v if prev_v is not None else 4.0)
+            lo = (prev_v + v) / 2 if prev_v is not None else v - gap / 2
+            hi = (next_v + v) / 2 if next_v is not None else v + gap / 2
+            sizes[label][dim] = [round(lo, 1), round(hi, 1)]
+        for label, lo, hi in cells:
+            if hi is not None:
+                sizes[label][dim] = [round(min(lo, hi), 1), round(max(lo, hi), 1)]
+
+    primary = "waist" if category in ("jeans", "trousers", "joggers", "shorts") else "chest"
+    rows_out = [{"label": label, "measurements": m} for label, m in sizes.items() if primary in m]
+    if len(rows_out) >= 2:
+        return {"unit": "cm", "source": source, "sizes": rows_out}
     return None

@@ -4,6 +4,7 @@ import pytest
 
 os.environ.setdefault("DATABASE_URL", "sqlite://")  # overridden per test below
 os.environ["OPENAI_API_KEY"] = ""
+os.environ.setdefault("CATALOG", "demo")  # API tests assert on the fixed synthetic catalog
 
 
 @pytest.fixture()

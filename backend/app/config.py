@@ -10,8 +10,11 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     openai_model: str = "gpt-4o"
     openai_timeout_s: float = 8.0
-    # Load the demo catalog on startup when the products table is empty.
+    # Load a catalog on startup when the products table is empty.
     auto_seed: bool = True
+    # "real": products and size charts scraped from real Indian stores (data/real_catalog.json).
+    # "demo": the original synthetic catalog of 8 fictional brands (data/seed_catalog.json).
+    catalog: str = "real"
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     @property

@@ -11,7 +11,9 @@ from sqlalchemy.orm import Session
 from .fit.dimensions import CATEGORIES
 from .models import Product
 
-SEED_PATH = Path(__file__).resolve().parents[1] / "data" / "seed_catalog.json"
+DATA = Path(__file__).resolve().parents[1] / "data"
+CATALOGS = {"real": DATA / "real_catalog.json", "demo": DATA / "seed_catalog.json"}
+SEED_PATH = CATALOGS["demo"]
 
 FIELDS = (
     "source", "store", "brand", "title", "description", "category", "gender", "price", "currency",
@@ -69,7 +71,7 @@ def ingest_file(session: Session, path: str | Path) -> dict:
     return ingest_items(session, items)
 
 
-def seed_if_empty(session: Session) -> dict | None:
+def seed_if_empty(session: Session, catalog: str = "real") -> dict | None:
     if session.scalar(select(func.count()).select_from(Product)):
         return None
-    return ingest_file(session, SEED_PATH)
+    return ingest_file(session, CATALOGS[catalog])

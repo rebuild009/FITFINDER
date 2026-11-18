@@ -1,0 +1,145 @@
+{
+ "catalog": {
+  "products": 653,
+  "stores": [
+   "Angrakhaa",
+   "Janasya",
+   "bigbanana"
+  ]
+ },
+ "men": {
+  "bodies": 4082,
+  "products": 250,
+  "distinct_charts": 12,
+  "coverage": [
+   {
+    "segment": "Men, mainstream",
+    "bodies": 2721,
+    "pairs": 680250,
+    "fits_55": 0.01696141124586549,
+    "good_fit_75": 0.002300624770305035,
+    "true_fit_90": 0.00048658581403895624,
+    "size_run_ends": 0.0
+   },
+   {
+    "segment": "Men, very tall",
+    "bodies": 105,
+    "pairs": 26250,
+    "fits_55": 0.040266666666666666,
+    "good_fit_75": 0.010742857142857143,
+    "true_fit_90": 0.003580952380952381,
+    "size_run_ends": 0.0
+   },
+   {
+    "segment": "Men, plus-size",
+    "bodies": 520,
+    "pairs": 130000,
+    "fits_55": 0.40325384615384613,
+    "good_fit_75": 0.2205153846153846,
+    "true_fit_90": 0.1376153846153846,
+    "size_run_ends": 0.0
+   },
+   {
+    "segment": "Men, big & tall",
+    "bodies": 103,
+    "pairs": 25750,
+    "fits_55": 0.5601553398058252,
+    "good_fit_75": 0.36570873786407765,
+    "true_fit_90": 0.2370097087378641,
+    "size_run_ends": 0.0
+   },
+   {
+    "segment": "Men, chest >= 123 cm (bigbanana's 2XL and up)",
+    "bodies": 130,
+    "pairs": 32500,
+    "fits_55": 0.9809230769230769,
+    "good_fit_75": 0.8855384615384615,
+    "true_fit_90": 0.6916307692307693,
+    "size_run_ends": 0.0
+   }
+  ],
+  "usual_label": {
+   "reference_chart": "bigbanana tshirt",
+   "shoppers": 203,
+   "pairs": 40397,
+   "label_fits": 0.750476520533703,
+   "label_not_offered": 0.0,
+   "engine_finds_fit_when_label_fails": 0.0
+  },
+  "robustness": {
+   "sigma_1cm": 0.04033092037228542,
+   "sigma_2cm": 0.03722854188210962
+  },
+  "inseam": {
+   "ratio_used": 0.45,
+   "mean_measured_ratio": 0.4815257705429269,
+   "median_error_cm": -5.454999999999998,
+   "mean_abs_error_cm": 5.576082802547768,
+   "bottoms_with_inseam_in_chart": 0,
+   "same_size_when_estimated": null
+  }
+ },
+ "women": {
+  "bodies": 1986,
+  "products": 403,
+  "distinct_charts": 73,
+  "coverage": [
+   {
+    "segment": "Women, mainstream",
+    "bodies": 1292,
+    "pairs": 520676,
+    "fits_55": 0.6317479584232805,
+    "good_fit_75": 0.45765504843703186,
+    "true_fit_90": 0.19404773794067712,
+    "size_run_ends": 0.02153546543339812
+   },
+   {
+    "segment": "Women, petite",
+    "bodies": 330,
+    "pairs": 132990,
+    "fits_55": 0.60187232122716,
+    "good_fit_75": 0.46863673960448154,
+    "true_fit_90": 0.16717046394465748,
+    "size_run_ends": 0.017076471915181593
+   },
+   {
+    "segment": "Women, tall",
+    "bodies": 100,
+    "pairs": 40300,
+    "fits_55": 0.6336476426799007,
+    "good_fit_75": 0.3965012406947891,
+    "true_fit_90": 0.17265508684863523,
+    "size_run_ends": 0.027220843672456575
+   },
+   {
+    "segment": "Women, plus-size",
+    "bodies": 264,
+    "pairs": 106392,
+    "fits_55": 0.5607940446650124,
+    "good_fit_75": 0.36645612452064064,
+    "true_fit_90": 0.11502744567260696,
+    "size_run_ends": 0.13535792164824423
+   }
+  ],
+  "usual_label": {
+   "reference_chart": "Janasya kurta",
+   "shoppers": 1379,
+   "pairs": 380604,
+   "label_fits": 0.14861115490115712,
+   "label_not_offered": 0.44038685878235645,
+   "engine_finds_fit_when_label_fails": 0.3196005456082853
+  },
+  "robustness": {
+   "sigma_1cm": 0.1208575919243796,
+   "sigma_2cm": 0.2603546366192194
+  },
+  "inseam": {
+   "ratio_used": 0.45,
+   "mean_measured_ratio": 0.4802283274085652,
+   "median_error_cm": -4.825000000000003,
+   "mean_abs_error_cm": 4.987598187311176,
+   "bottoms_with_inseam_in_chart": 0,
+   "same_size_when_estimated": null
+  }
+ }
+}

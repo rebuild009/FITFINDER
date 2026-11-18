@@ -24,13 +24,23 @@ CM_PER_INCH = 2.54
 MAX_CM = {"chest": 200, "waist": 200, "hips": 210, "shoulder": 75, "inseam": 110}
 DIM_ALIASES = {
     "chest": "chest", "bust": "chest", "waist": "waist", "hip": "hips", "hips": "hips",
-    "shoulder": "shoulder", "shoulders": "shoulder", "inseam": "inseam", "leg length": "inseam",
+    "shoulder": "shoulder", "shoulders": "shoulder", "inseam": "inseam", "leg length": "inseam", "length": "inseam",
 }
-_DIM = r"(chest|bust|waist|hips?|shoulders?|inseam|leg length)"
+_DIM = r"(chest|bust|waist|hips?|shoulders?|inseam|leg length|length)"
 _NUM = r"(\d{2,3}(?:\.\d+)?)"
 _UNIT = r"(cm|cms|centimet(?:er|re)s?|inches|inch|in|\"|'')"
-_CURRENCY = r"(?:rs\.?|inr|rupees)"
+_CURRENCY = r"(?:(?<![a-z])(?:rs\.?|inr|rupees)(?![a-z]))"  # whole word: not the "rs" in trousers
+_K = r"(k(?![a-z]))?"  # "2k" = 2000, but not the k in "2000 kurta"
+_MAX_AFTER = r"(?:se\s+kam|se\s+n[ei]+che|ke\s+andar|ke\s+n[ei]+che|tak|max(?:imum)?|or\s+less|and\s+(?:below|under))(?![a-z])"
 _NOT_A_UNIT = r"(?!\s*(?:cm|cms|in\b|inch|inches|\"|ft|feet|'))"
+
+
+class _Span:
+    def __init__(self, start: int, end: int):
+        self._span = (start, end)
+
+    def span(self):
+        return self._span
 
 
 class _Text:
@@ -74,9 +84,9 @@ def _to_cm(dim: str, value: float, unit: str | None) -> float | None:
 def _parse_height(t: _Text) -> float | None:
     patterns = [
         # 6'4", 6 ft 4 in, 6ft, 5 feet 11
-        (r"(?<!\d)([4-7])\s*(?:'|ft|feet|foot)\s*(?:(\d{1,2})\s*(?:\"|''|inches|inch|in)?)?(?![\d.])", "ftin"),
+        (r"(?<!\d)([4-7])\s*(?:'|ft|feet|foot)\s*(?:(\d{1,2})\s*(?:\"|''|inches|inch|in)?)?(?![\d.])(?:\s*tall\b)?", "ftin"),
         # 5.8 ft (Indian shorthand for 5'8")
-        (r"(?<!\d)([4-7])\.(\d{1,2})\s*(?:ft|feet|foot)\b", "ftin"),
+        (r"(?<!\d)([4-7])\.(\d{1,2})\s*(?:ft|feet|foot)\b(?:\s*tall\b)?", "ftin"),
         # height 5.8 / 5.8 tall
         (r"(?:height|ht)\s*(?:of|is|:|=)?\s*([4-7])\.(\d{1,2})(?!\d)", "ftin"),
         (r"(?<!\d)([4-7])\.(\d{1,2})\s*tall\b", "ftin"),
@@ -107,24 +117,29 @@ def _parse_height(t: _Text) -> float | None:
 
 def _parse_prices(t: _Text, q: ParsedQuery) -> None:
     for pattern in (
-        rf"between\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?\s*(?:and|to|-)\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?",
-        rf"{_CURRENCY}\s*(\d[\d,]*)(?![\d,])\s*(k)?\s*(?:-|to)\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?",
+        rf"between\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}\s*(?:and|to|-)\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}",
+        rf"{_CURRENCY}\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}\s*(?:-|to)\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}",
     ):
         for m in t.finditer(pattern):
             lo, hi = _money(m.group(1), m.group(2)), _money(m.group(3), m.group(4))
             q.min_price, q.max_price = min(lo, hi), max(lo, hi)
             t.take(m)
             return
-    max_words = r"(?:under|below|less than|upto|up to|within|max(?:imum)?|cheaper than|budget(?: of| is)?|<)"
-    min_words = r"(?:over|above|more than|min(?:imum)?|at least|starting(?: at| from)?|>)"
-    for m in t.finditer(rf"{max_words}\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?{_NOT_A_UNIT}(?:\s*{_CURRENCY})?"):
+    max_words = r"(?<![a-z])(?:under|below|less than|upto|up to|within|max(?:imum)?|cheaper than|budget(?: of| is)?|<)"
+    min_words = r"(?<![a-z])(?:over|above|more than|min(?:imum)?|at least|starting(?: at| from)?|>)"
+    for m in t.finditer(rf"{max_words}\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}{_NOT_A_UNIT}(?:\s*{_CURRENCY})?"):
         q.max_price = _money(m.group(1), m.group(2))
         t.take(m)
-    for m in t.finditer(rf"{min_words}\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?{_NOT_A_UNIT}(?:\s*{_CURRENCY})?"):
+    for m in t.finditer(rf"{min_words}\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}{_NOT_A_UNIT}(?:\s*{_CURRENCY})?"):
         q.min_price = _money(m.group(1), m.group(2))
         t.take(m)
+    if q.max_price is None:
+        for m in t.finditer(rf"(?<![\d.])(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}\s*(?:{_CURRENCY}\s*)?{_MAX_AFTER}"):
+            q.max_price = _money(m.group(1), m.group(2))
+            t.take(m)
     if q.max_price is None and q.min_price is None:
-        for pattern in (rf"{_CURRENCY}\s*(\d[\d,]*)(?![\d,])\s*(k)?", rf"(?<!\d)(\d[\d,]*)(?![\d,])\s*(k)?\s*{_CURRENCY}\b"):
+        for pattern in (rf"{_CURRENCY}\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}", rf"(?<!\d)(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}\s*{_CURRENCY}\b",
+                        r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*(k)(?![a-z])"):
             for m in t.finditer(pattern):
                 q.max_price = _money(m.group(1), m.group(2))
                 t.take(m)
@@ -136,6 +151,12 @@ def _parse_measurements(t: _Text, q: ParsedQuery) -> None:
         (rf"{_NUM}\s*{_UNIT}?\s*(?:inch(?:es)?\s*)?{_DIM}\b", (1, 2, 3)),  # 52 inch chest
         (rf"\b{_DIM}\s*(?:size|measurement|measures|of|is|:|=|-)?\s*(?:of|is)?\s*{_NUM}\s*{_UNIT}?(?![a-z])", (2, 3, 1)),  # chest 52in
     )
+    # A query is usually written one way throughout: "waist 38 length 34" or
+    # "38 waist 34 length". Try first the style of whichever comes first, so
+    # "waist 38 length 34" is not read as "38 length".
+    firsts = [min((m.start() for m in t.finditer(p)), default=10**9) for p, _ in patterns]
+    if firsts[1] < firsts[0]:
+        patterns = patterns[::-1]
     for pattern, (num_i, unit_i, dim_i) in patterns:
         for m in t.finditer(pattern):
             dim = DIM_ALIASES[m.group(dim_i)]
@@ -143,6 +164,28 @@ def _parse_measurements(t: _Text, q: ParsedQuery) -> None:
             if cm is not None and dim not in q.measurements:
                 q.measurements[dim] = cm
                 t.take(m)
+
+
+TOP_CATEGORIES = {"tshirt", "shirt", "polo", "hoodie", "jacket", "kurta"}
+BOTTOM_CATEGORIES = {"jeans", "trousers", "joggers", "shorts"}
+
+
+def _parse_numeric_size(t: _Text, q: ParsedQuery) -> None:
+    if q.category in TOP_CATEGORIES:
+        dim = "chest"
+    elif q.category in BOTTOM_CATEGORIES:
+        dim = "waist"
+    else:
+        return
+    if dim in q.measurements:
+        return
+    for pattern in (r"\bsize\s*(?:of|is|:|-)?\s*(\d{2})(?![\d.])", r"(?<![\d.])(\d{2})\s*size\b"):
+        for m in t.finditer(pattern):
+            value = int(m.group(1))
+            if 26 <= value <= 64:
+                q.measurements[dim] = round(value * CM_PER_INCH, 1)
+                t.take(m)
+                return
 
 
 def _parse_size_label(t: _Text) -> str | None:
@@ -194,14 +237,21 @@ def parse_query(raw: str) -> ParsedQuery:
     q.size_label = _parse_size_label(t)
 
     tags = []
+    for m in t.finditer(r"(?<![a-z])(big|bade|bada|badi|bari|bare)\s+(guys?|m[ae]n|sizes?)(?![a-z])"):
+        tags.append("plus-size")
+        # keep "guys"/"men" for the gender reader; "size" is used up here
+        t.take(m if m.group(2).startswith("size") else _Span(m.start(1), m.end(1)))
+        break
     for tag, phrases in sorted(TAG_WORDS.items(), key=lambda kv: -max(len(p) for p in kv[1])):
         if _all(t, phrases):
-            tags.append(tag)
+            if tag not in tags:
+                tags.append(tag)
     q.tags = tags
 
     q.fit_preference = _earliest(t, FIT_WORDS)
     q.category = _earliest(t, CATEGORY_SYNONYMS)
     q.gender = _earliest(t, GENDER_WORDS)
+    _parse_numeric_size(t, q)
     q.colors = _all(t, list(COLOR_GROUPS))
     q.materials = _all(t, MATERIALS)
 

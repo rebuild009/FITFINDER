@@ -1,0 +1,100 @@
+{"q": "linen shirt for 52 inch chest under 3000", "category": "shirt", "materials": ["linen"], "max_price": 3000, "measurements": {"chest": 132.1}}
+{"q": "under 2000 kurta", "category": "kurta", "max_price": 2000}
+{"q": "black tshirt 4xl", "category": "tshirt", "colors": ["black"], "size_label": "4XL"}
+{"q": "XXXL white shirt for men", "category": "shirt", "colors": ["white"], "size_label": "3XL", "gender": "men"}
+{"q": "jeans waist 44", "category": "jeans", "measurements": {"waist": 111.8}}
+{"q": "cotton kurti for women below rs 1500", "category": "kurta", "materials": ["cotton"], "gender": "women", "max_price": 1500}
+{"q": "oversized hoodie 6xl", "category": "hoodie", "fit_preference": "relaxed", "size_label": "6XL"}
+{"q": "slim fit chinos 40 waist", "category": "trousers", "fit_preference": "snug", "measurements": {"waist": 101.6}}
+{"q": "tall guy 6'5 needs shirts", "category": "shirt", "gender": "men", "tags": ["tall"], "measurements": {"height": 195.6}}
+{"q": "plus size dress for wedding under 5k", "category": "dress", "tags": ["plus-size"], "max_price": 5000}
+{"q": "navy blue polo between 1000 and 2000", "category": "polo", "colors": ["navy blue"], "min_price": 1000, "max_price": 2000}
+{"q": "track pants for 50 inch hips", "category": "joggers", "measurements": {"hips": 127.0}}
+{"q": "kurta pajama for 48 chest", "category": "kurta", "measurements": {"chest": 121.9}}
+{"q": "white kurta for diwali 46 chest", "category": "kurta", "colors": ["white"], "measurements": {"chest": 116.8}}
+{"q": "mens tshirt chest 54 inch", "category": "tshirt", "gender": "men", "measurements": {"chest": 137.2}}
+{"q": "jeans for 42 inch waist and 34 inseam", "category": "jeans", "measurements": {"waist": 106.7, "inseam": 86.4}}
+{"q": "ladies top size 3xl", "category": "top", "gender": "women", "size_label": "3XL"}
+{"q": "big and tall jacket", "category": "jacket", "tags": ["big-and-tall"]}
+{"q": "shirt 2xl under 1500", "category": "shirt", "size_label": "2XL", "max_price": 1500}
+{"q": "t shirts for 120 cm chest", "category": "tshirt", "measurements": {"chest": 120.0}}
+{"q": "formal trousers 46 waist", "category": "trousers", "measurements": {"waist": 116.8}}
+{"q": "green kurti xxl", "category": "kurta", "colors": ["green"], "size_label": "2XL"}
+{"q": "petite dress 5 ft", "category": "dress", "tags": ["petite"], "measurements": {"height": 152.4}}
+{"q": "maroon hoodie for husband 52 chest", "category": "hoodie", "colors": ["maroon"], "gender": "men", "measurements": {"chest": 132.1}}
+{"q": "shorts for 48 waist", "category": "shorts", "measurements": {"waist": 121.9}}
+{"q": "polo t-shirt 5xl black", "category": "polo", "colors": ["black"], "size_label": "5XL"}
+{"q": "denim jacket for women", "category": "jacket", "materials": ["denim"], "gender": "women"}
+{"q": "loose cotton kurta 3xl under rs 2,500", "category": "kurta", "materials": ["cotton"], "fit_preference": "relaxed", "size_label": "3XL", "max_price": 2500}
+{"q": "jeans 38 waist 36 length", "category": "jeans", "measurements": {"waist": 96.5, "inseam": 91.4}}
+{"q": "blazer for 56 inch chest", "category": "jacket", "measurements": {"chest": 142.2}}
+{"q": "sweatshirt for winter 4xl grey", "category": "hoodie", "colors": ["grey"], "size_label": "4XL"}
+{"q": "shirts for 6 ft 6 in man", "category": "shirt", "gender": "men", "measurements": {"height": 198.1}}
+{"q": "rayon kurti under 999", "category": "kurta", "materials": ["rayon"], "max_price": 999}
+{"q": "tshirt chest 140cm", "category": "tshirt", "measurements": {"chest": 140.0}}
+{"q": "linen trousers relaxed fit 44 waist", "category": "trousers", "materials": ["linen"], "fit_preference": "relaxed", "measurements": {"waist": 111.8}}
+{"q": "beige chinos", "category": "trousers", "colors": ["beige"]}
+{"q": "olive joggers 3xl", "category": "joggers", "colors": ["olive"], "size_label": "3XL"}
+{"q": "dress for 50 inch bust", "category": "dress", "measurements": {"chest": 127.0}}
+{"q": "top for women bust 46", "category": "top", "gender": "women", "measurements": {"chest": 116.8}}
+{"q": "plus size jeans for women waist 42", "category": "jeans", "gender": "women", "tags": ["plus-size"], "measurements": {"waist": 106.7}}
+{"q": "shirt size 44", "category": "shirt", "measurements": {"chest": 111.8}}
+{"q": "44 size shirt", "category": "shirt", "measurements": {"chest": 111.8}}
+{"q": "t-shirt 3XL under ₹800", "category": "tshirt", "size_label": "3XL", "max_price": 800}
+{"q": "kurta for 5'6 woman", "category": "kurta", "gender": "women", "measurements": {"height": 167.6}}
+{"q": "hoodie under 1.5k", "category": "hoodie", "max_price": 1500}
+{"q": "jeans under 2k waist 40", "category": "jeans", "max_price": 2000, "measurements": {"waist": 101.6}}
+{"q": "lowers for 46 waist", "category": "joggers", "measurements": {"waist": 116.8}}
+{"q": "white shirt for office 50 chest slim", "category": "shirt", "colors": ["white"], "fit_preference": "snug", "measurements": {"chest": 127.0}}
+{"q": "regular fit polo 2xl", "category": "polo", "fit_preference": "regular", "size_label": "2XL"}
+{"q": "maxi dress 4xl", "category": "dress", "size_label": "4XL"}
+{"q": "kurtas above 1000", "category": "kurta", "min_price": 1000}
+{"q": "shirt for 132 cm chest and 193 cm height", "category": "shirt", "measurements": {"chest": 132.0, "height": 193.0}}
+{"q": "jacket chest 58", "category": "jacket", "measurements": {"chest": 147.3}}
+{"q": "sky blue shirt 5xl", "category": "shirt", "colors": ["sky blue"], "size_label": "5XL"}
+{"q": "shorts xxxxl", "category": "shorts", "size_label": "4XL"}
+{"q": "ladies kurti cotton 4xl", "category": "kurta", "gender": "women", "materials": ["cotton"], "size_label": "4XL"}
+{"q": "tees for big guys", "category": "tshirt", "gender": "men", "tags": ["plus-size"]}
+{"q": "uk 24 dress", "category": "dress", "size_label": "UK 24"}
+{"q": "track pant 5xl", "category": "joggers", "size_label": "5XL"}
+{"q": "trousers waist 112 cm", "category": "trousers", "measurements": {"waist": 112.0}}
+{"q": "shirt with 21 inch shoulder", "category": "shirt", "measurements": {"shoulder": 53.3}}
+{"q": "pink top for women under 1200", "category": "top", "colors": ["pink"], "gender": "women", "max_price": 1200}
+{"q": "kurta 48 chest under 2500 cotton", "category": "kurta", "materials": ["cotton"], "max_price": 2500, "measurements": {"chest": 121.9}}
+{"q": "shirt for my dad 3xl", "category": "shirt", "gender": "men", "size_label": "3XL"}
+{"q": "blue jeans 44 waist", "category": "jeans", "colors": ["blue"], "measurements": {"waist": 111.8}}
+{"q": "hoodie chest 60 inches", "category": "hoodie", "measurements": {"chest": 152.4}}
+{"q": "tshirt 7xl", "category": "tshirt", "size_label": "7XL"}
+{"q": "jeans 50 waist", "category": "jeans", "measurements": {"waist": 127.0}}
+{"q": "shirt for 6 feet tall man chest 50", "category": "shirt", "gender": "men", "measurements": {"height": 182.9, "chest": 127.0}}
+{"q": "tshrit 4xl", "category": "tshirt", "size_label": "4XL"}
+{"q": "kurtha for men", "category": "kurta", "gender": "men"}
+{"q": "jens waist 42", "category": "jeans", "measurements": {"waist": 106.7}}
+{"q": "hoodies for 5xl men", "category": "hoodie", "gender": "men", "size_label": "5XL"}
+{"q": "pant 44 waist", "category": "trousers", "measurements": {"waist": 111.8}}
+{"q": "chinos 34 inseam", "category": "trousers", "measurements": {"inseam": 86.4}}
+{"q": "black jeans size 40", "category": "jeans", "colors": ["black"], "measurements": {"waist": 101.6}}
+{"q": "jeans size 42 under 1999", "category": "jeans", "max_price": 1999, "measurements": {"waist": 106.7}}
+{"q": "shirt under 1000 rupees", "category": "shirt", "max_price": 1000}
+{"q": "kurti 1000 se kam", "category": "kurta", "max_price": 1000}
+{"q": "white shirt 2000 tak", "category": "shirt", "colors": ["white"], "max_price": 2000}
+{"q": "ladkiyon ke liye kurti", "category": "kurta", "gender": "women"}
+{"q": "mardon ke liye shirt 4xl", "category": "shirt", "gender": "men", "size_label": "4XL"}
+{"q": "bade size ki tshirt", "category": "tshirt", "tags": ["plus-size"]}
+{"q": "dress for 5 foot 2 woman", "category": "dress", "gender": "women", "measurements": {"height": 157.5}}
+{"q": "tunic for women 3xl", "category": "top", "gender": "women", "size_label": "3XL"}
+{"q": "pathani kurta 52 chest", "category": "kurta", "measurements": {"chest": 132.1}}
+{"q": "nehru jacket for men", "category": "jacket", "gender": "men"}
+{"q": "palazzo for women 4xl", "category": "trousers", "gender": "women", "size_label": "4XL"}
+{"q": "leggings 5xl", "category": "trousers", "size_label": "5XL"}
+{"q": "vest 3xl", "category": "tshirt", "size_label": "3XL"}
+{"q": "round neck tshirt 6xl", "category": "tshirt", "size_label": "6XL"}
+{"q": "half sleeve shirt 46 chest", "category": "shirt", "measurements": {"chest": 116.8}}
+{"q": "cargo pants 40 waist", "category": "trousers", "measurements": {"waist": 101.6}}
+{"q": "shirt for 130kg man", "category": "shirt", "gender": "men"}
+{"q": "jeans 2.5k max", "category": "jeans", "max_price": 2500}
+{"q": "kurta less than 1500 for men xl", "category": "kurta", "max_price": 1500, "gender": "men", "size_label": "XL"}
+{"q": "XL tee", "category": "tshirt", "size_label": "XL"}
+{"q": "3 xl shirt", "category": "shirt", "size_label": "3XL"}
+{"q": "tshirt for chest size 52", "category": "tshirt", "measurements": {"chest": 132.1}}
+{"q": "jeans for 44\" waist", "category": "jeans", "measurements": {"waist": 111.8}}

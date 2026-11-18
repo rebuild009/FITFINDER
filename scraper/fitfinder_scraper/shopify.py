@@ -11,6 +11,7 @@ from urllib import robotparser
 import httpx
 from bs4 import BeautifulSoup
 
+from .brand_charts import PROVIDERS, ChartLookup
 from .charts import chart_from_html, standard_chart
 from .classify import category_of, colors_of, gender_of, materials_of
 from .sizes import normalise
@@ -29,6 +30,7 @@ class Store:
     currency: str = "INR"
     max_pages: int = 4
     tags: list[str] = field(default_factory=list)  # e.g. ["plus-size"] for a plus-size store
+    charts: str | None = None  # where the brand publishes size charts: "script" or "kiwi" (see brand_charts.py)
 
     @property
     def base(self) -> str:
@@ -86,7 +88,7 @@ def _option_values(product: dict, *names: str) -> tuple[int | None, list[str]]:
     return None, []
 
 
-def normalise_product(raw: dict, store: Store, report: ScrapeReport) -> dict | None:
+def normalise_product(raw: dict, store: Store, report: ScrapeReport, chart_lookup: ChartLookup | None = None) -> dict | None:
     title = raw.get("title", "").strip()
     tags = raw.get("tags") or []
     if isinstance(tags, str):
@@ -110,12 +112,15 @@ def normalise_product(raw: dict, store: Store, report: ScrapeReport) -> dict | N
     labels = [normalise(v) for v in size_values]
 
     gender = gender_of(title, product_type, tags, store.gender)
-    chart = chart_from_html(raw.get("body_html", ""), category)
+    chart = (chart_lookup(raw, category) if chart_lookup else None) or chart_from_html(raw.get("body_html", ""), category)
     if chart:
         known = set(labels)
         matched = [s for s in chart["sizes"] if s["label"] in known]
-        chart["sizes"] = matched or chart["sizes"]
-    else:
+        if matched or chart["source"] == "product":
+            chart["sizes"] = matched or chart["sizes"]
+        else:  # a brand chart that covers none of this product's sizes is the wrong chart
+            chart = None
+    if not chart:
         chart = standard_chart(category, gender, labels)
     if not chart:
         report.skip("sizes we can't map to measurements (e.g. free size)")
@@ -160,10 +165,13 @@ def scrape_store(store: Store, client: httpx.Client | None = None, delay_s: floa
             report.skip("robots.txt disallows /products.json")
             return [], report
         raw = fetch_products(client, store, delay_s)
+        lookup = None
+        if store.charts:
+            lookup = PROVIDERS[store.charts](client, store.base, raw, delay_s)
+        report.fetched = len(raw)
+        items = [p for p in (normalise_product(r, store, report, lookup) for r in raw) if p]
     finally:
         if own:
             client.close()
-    report.fetched = len(raw)
-    items = [p for p in (normalise_product(r, store, report) for r in raw) if p]
     report.kept = len(items)
     return items, report

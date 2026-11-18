@@ -6,8 +6,8 @@ import re
 
 # Order matters: more specific phrases first (t-shirt before shirt, sweatshirt before shirt).
 CATEGORY_RULES = [
+    ("polo", ["polo"]),  # before tshirt: "Polo T-Shirt" is a polo
     ("tshirt", ["t-shirt", "t shirt", "tshirt", "tee", "henley"]),
-    ("polo", ["polo"]),
     ("hoodie", ["hoodie", "sweatshirt", "hoody"]),
     ("jacket", ["jacket", "blazer", "bomber", "coat", "shacket"]),
     ("kurta", ["kurta", "kurti"]),
