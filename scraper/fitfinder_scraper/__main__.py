@@ -55,7 +55,7 @@ def main(argv: list[str] | None = None) -> int:
         path.write_text(json.dumps({"source": "shopify", "store": store.host, "products": items}, indent=1))
         print(f"✓ {store.host}: kept {report.kept}/{report.fetched} products -> {path}")
         if report.charts:
-            print(f"    size charts: {report.charts}  (product = read from the product page, standard = generic fallback)")
+            print(f"    size charts: {report.charts}  (product = this product's page, brand = the brand's category chart, standard = generic fallback)")
         for reason, n in report.skipped.items():
             print(f"    skipped {n}: {reason}")
     return 1 if failed == len(stores) else 0

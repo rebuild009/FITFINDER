@@ -1,0 +1,311 @@
+{
+ "sizings": [
+  {
+   "id": 3387955,
+   "name": "Suit Set",
+   "isEnabled": true,
+   "tables": {
+    "mEbiIjX": {
+     "data": [
+      [
+       {
+        "type": "header",
+        "value": "SIZE",
+        "unitType": "string"
+       },
+       {
+        "type": "header",
+        "value": "BUST",
+        "unitType": "string"
+       },
+       {
+        "type": "header",
+        "value": "WAIST",
+        "unitType": "string"
+       },
+       {
+        "type": "header",
+        "value": "HIP",
+        "unitType": "string"
+       },
+       {
+        "type": "header",
+        "value": "SHOULDER",
+        "unitType": "string"
+       },
+       {
+        "type": "header",
+        "value": "BOTTOM",
+        "unitType": "string"
+       }
+      ],
+      [
+       {
+        "type": "header",
+        "value": "XS",
+        "unitType": "string"
+       },
+       {
+        "type": "single",
+        "value": "34",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "30",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "37",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "13.5",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "26",
+        "unitType": "in"
+       }
+      ],
+      [
+       {
+        "type": "header",
+        "value": "S",
+        "unitType": "string"
+       },
+       {
+        "type": "single",
+        "value": "36",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "32",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "39",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "14",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "28",
+        "unitType": "in"
+       }
+      ],
+      [
+       {
+        "type": "header",
+        "value": "M",
+        "unitType": "string"
+       },
+       {
+        "type": "single",
+        "value": "38",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "34",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "41",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "14.5",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "30",
+        "unitType": "in"
+       }
+      ],
+      [
+       {
+        "type": "header",
+        "value": "L",
+        "unitType": "string"
+       },
+       {
+        "type": "single",
+        "value": "40",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "36",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "43",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "15",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "32",
+        "unitType": "in"
+       }
+      ],
+      [
+       {
+        "type": "header",
+        "value": "XL",
+        "unitType": "string"
+       },
+       {
+        "type": "single",
+        "value": "42",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "38",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "45",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "15.5",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "34",
+        "unitType": "in"
+       }
+      ],
+      [
+       {
+        "type": "header",
+        "value": "2XL",
+        "unitType": "string"
+       },
+       {
+        "type": "single",
+        "value": "44",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "40",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "47",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "16",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "36",
+        "unitType": "in"
+       }
+      ],
+      [
+       {
+        "type": "header",
+        "value": "3XL",
+        "unitType": "string"
+       },
+       {
+        "type": "single",
+        "value": "46",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "42",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "49",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "16.5",
+        "unitType": "in"
+       },
+       {
+        "type": "single",
+        "value": "38",
+        "unitType": "in"
+       }
+      ]
+     ],
+     "hide": false,
+     "type": 0,
+     "footer": "*These measurements are indicative. Actual Size may differ.",
+     "header": "Suit Set Size Chart\n",
+     "direction": "col",
+     "canonicalMeasurements": {}
+    }
+   },
+   "layout": {
+    "data": [
+     {
+      "data": [
+       {
+        "title": "SIZE CHART",
+        "layout": {
+         "data": [
+          {
+           "type": 1,
+           "value": "mEbiIjX"
+          }
+         ]
+        }
+       },
+       {
+        "title": "HOW TO MEASURE",
+        "layout": {
+         "data": [
+          {
+           "type": 0,
+           "value": "<h3><strong><img src=\"https://cdn.kiwisizing.com/janasya-india-1788865795268.png\" width=\"auto\" height=\"auto\" alt=\"regular\" style=\"float: none;\"><br>HOW TO MEASURE</strong></h3><p>For the best fit, take your measurements comfortably without pulling the measuring tape too tight. Keep the tape straight and level for accurate measurements.</p><p><strong>SHOULDER</strong><br>Measure from the tip of one shoulder to the tip of the other shoulder.</p><p><strong>BUST</strong><br>Wrap the measuring tape around the fullest part of your bust, keeping it comfortably snug. Make sure the tape is straight across your back.</p><p><strong>WAIST</strong><br>Measure around your natural waistline, usually just above the belly button. Keep the tape comfortably snug without tightening it.</p><p><strong>HIPS</strong><br>Measure around the fullest part of your hips and seat. Keep the measuring tape level and comfortably snug.</p>"
+          }
+         ]
+        }
+       }
+      ],
+      "type": 3,
+      "styles": {
+       "type": "horizontal"
+      }
+     }
+    ]
+   }
+  }
+ ]
+}

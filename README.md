@@ -13,10 +13,13 @@ different brands; FitFinder compares measurements, not labels.
 - **Natural-language search**: "shirt for a 52 inch chest under 3000" becomes Shirts, chest 132 cm,
   up to ₹3,000. A built-in parser works with no setup. GPT-4o takes over when `OPENAI_API_KEY` is set
   and falls back to the built-in parser on any error.
-- **Data pipeline**: a scraper for public Shopify stores. It reads size charts from product pages where
-  stores publish them and falls back to standard charts where they don't.
-- **Demo catalog**: 143 products from 8 fictional brands with different size runs and cuts, so the app
-  works the moment it starts.
+- **Data pipeline**: a scraper for public Shopify stores. It reads the brand's own size charts (from the
+  product page, the theme's embedded chart, or the Kiwi Sizing app) and falls back to standard charts
+  only where a brand publishes none.
+- **Real catalog** (default): 653 products from three Indian size-inclusive brands, bigbanana (men,
+  2XL–10XL), Janasya and Angrakhaa (women, up to 7XL), with 98% of size charts taken from the brand
+  itself. Collected 19 Nov 2026 with `scraper/stores.india.json`. The original synthetic catalog of
+  8 fictional brands is still available with `CATALOG=demo`.
 - **Web app**: React + Tailwind, with a measurement card, search, fit-ranked results, and a per-size
   breakdown drawn as measuring tape.
 
@@ -39,7 +42,7 @@ npm install
 npm run dev
 ```
 
-The backend uses SQLite and loads the demo catalog on first start, so nothing else is needed.
+The backend uses SQLite and loads the real-store catalog on first start, so nothing else is needed. Set `CATALOG=demo` to use the synthetic catalog instead.
 
 **PostgreSQL** (optional): run `docker compose up -d db`, then set
 `DATABASE_URL=postgresql://fitfinder:fitfinder@localhost:5432/fitfinder` in `backend/.env`.
@@ -60,7 +63,7 @@ cd ../backend && python -m app.cli ingest ../scraper/output/*.json
 flowchart LR
     S[Shopify stores] -->|products.json| SC[scraper]
     SC -->|catalog JSON| IN[ingest]
-    SEED[demo catalog] --> IN
+    SEED[real + demo catalogs] --> IN
     IN --> DB[(SQLite / PostgreSQL)]
     U[Shopper] -->|measurements + query| FE[React app]
     FE -->|/api/search| API[FastAPI]
@@ -95,7 +98,7 @@ you know how much to trust it.
 ## Project layout
 
 ```
-backend/    FastAPI app, True-Fit engine, search, demo catalog, tests
+backend/    FastAPI app, True-Fit engine, search, real and demo catalogs, tests
 frontend/   React + Vite + Tailwind web app
 scraper/    Shopify data pipeline, tests
 docs/       notes and diagrams

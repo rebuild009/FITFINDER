@@ -1,0 +1,7 @@
+{
+  "stores": [
+    {"domain": "bigbananaonline.com", "name": "bigbanana", "gender": "men", "max_pages": 1, "tags": ["plus-size"], "charts": "script"},
+    {"domain": "janasya.com", "name": "Janasya", "gender": "women", "max_pages": 1, "tags": [], "charts": "kiwi"},
+    {"domain": "www.angrakhaa.com", "name": "Angrakhaa", "gender": "women", "max_pages": 1, "tags": ["plus-size"], "charts": "kiwi"}
+  ]
+}

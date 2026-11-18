@@ -40,9 +40,9 @@ async def lifespan(_: FastAPI):
     init_db()
     if settings.auto_seed:
         with SessionLocal() as session:
-            result = seed_if_empty(session)
+            result = seed_if_empty(session, settings.catalog)
             if result:
-                log.info("Loaded demo catalog: %s", result)
+                log.info("Loaded %s catalog: %s", settings.catalog, result)
     yield
 
 

@@ -36,7 +36,7 @@ profile's unit.
 - `app/fit/dimensions.py`: categories, per-category weights, tolerances
 - `app/search/rules.py`: rule-based query parser; `app/search/llm.py`: GPT-4o parser
 - `app/search/service.py`: filtering, relevance, fit ranking
-- `app/ingest.py` / `app/cli.py`: load the demo catalog or scraper output (`python -m app.cli ingest FILE`)
+- `app/ingest.py` / `app/cli.py`: load the real catalog (`data/real_catalog.json`, default), the demo catalog (`seed demo`) or scraper output (`python -m app.cli ingest FILE`)
 - `app/seed/generate.py`: regenerates `data/seed_catalog.json` (fictional brands)
 
 ## Parser accuracy
