@@ -30,6 +30,7 @@ _DIM = r"(chest|bust|waist|hips?|shoulders?|inseam|leg length)"
 _NUM = r"(\d{2,3}(?:\.\d+)?)"
 _UNIT = r"(cm|cms|centimet(?:er|re)s?|inches|inch|in|\"|'')"
 _CURRENCY = r"(?:rs\.?|inr|rupees)"
+_K = r"(k(?![a-z]))?"  # "2k" = 2000, but not the k in "2000 kurta"
 _NOT_A_UNIT = r"(?!\s*(?:cm|cms|in\b|inch|inches|\"|ft|feet|'))"
 
 
@@ -107,8 +108,8 @@ def _parse_height(t: _Text) -> float | None:
 
 def _parse_prices(t: _Text, q: ParsedQuery) -> None:
     for pattern in (
-        rf"between\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?\s*(?:and|to|-)\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?",
-        rf"{_CURRENCY}\s*(\d[\d,]*)(?![\d,])\s*(k)?\s*(?:-|to)\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?",
+        rf"between\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}\s*(?:and|to|-)\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}",
+        rf"{_CURRENCY}\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}\s*(?:-|to)\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}",
     ):
         for m in t.finditer(pattern):
             lo, hi = _money(m.group(1), m.group(2)), _money(m.group(3), m.group(4))
@@ -117,14 +118,14 @@ def _parse_prices(t: _Text, q: ParsedQuery) -> None:
             return
     max_words = r"(?:under|below|less than|upto|up to|within|max(?:imum)?|cheaper than|budget(?: of| is)?|<)"
     min_words = r"(?:over|above|more than|min(?:imum)?|at least|starting(?: at| from)?|>)"
-    for m in t.finditer(rf"{max_words}\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?{_NOT_A_UNIT}(?:\s*{_CURRENCY})?"):
+    for m in t.finditer(rf"{max_words}\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}{_NOT_A_UNIT}(?:\s*{_CURRENCY})?"):
         q.max_price = _money(m.group(1), m.group(2))
         t.take(m)
-    for m in t.finditer(rf"{min_words}\s*{_CURRENCY}?\s*(\d[\d,]*)(?![\d,])\s*(k)?{_NOT_A_UNIT}(?:\s*{_CURRENCY})?"):
+    for m in t.finditer(rf"{min_words}\s*{_CURRENCY}?\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}{_NOT_A_UNIT}(?:\s*{_CURRENCY})?"):
         q.min_price = _money(m.group(1), m.group(2))
         t.take(m)
     if q.max_price is None and q.min_price is None:
-        for pattern in (rf"{_CURRENCY}\s*(\d[\d,]*)(?![\d,])\s*(k)?", rf"(?<!\d)(\d[\d,]*)(?![\d,])\s*(k)?\s*{_CURRENCY}\b"):
+        for pattern in (rf"{_CURRENCY}\s*(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}", rf"(?<!\d)(\d[\d,]*(?:\.\d+)?)(?![\d,]|\.\d)\s*{_K}\s*{_CURRENCY}\b"):
             for m in t.finditer(pattern):
                 q.max_price = _money(m.group(1), m.group(2))
                 t.take(m)

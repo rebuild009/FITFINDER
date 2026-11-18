@@ -72,3 +72,28 @@ def test_tshirt_is_not_shirt_and_keywords_survive():
 def test_material_words_are_not_eaten_by_category():
     q = p("flannel shirt")
     assert q.category == "shirt" and q.materials == ["flannel"]
+
+
+@pytest.mark.parametrize(
+    "text,lo,hi,category",
+    [
+        ("under 2000 kurta", None, 2000, "kurta"),
+        ("rs 1500 kurti for women", None, 1500, "kurta"),
+        ("above 999 khadi shirt", 999, None, "shirt"),
+        ("kurta under 2k", None, 2000, "kurta"),
+        ("between 1000 and 2 k kurtas", 1000, 2000, "kurta"),
+        ("rs 2k-3k kurtas", 2000, 3000, "kurta"),
+    ],
+)
+def test_thousands_k_is_not_the_first_letter_of_the_next_word(text, lo, hi, category):
+    q = p(text)
+    assert (q.min_price, q.max_price, q.category) == (lo, hi, category)
+
+
+@pytest.mark.parametrize(
+    "text,lo,hi",
+    [("under 2.5k", None, 2500), ("between 1.5k and 2.5k", 1500, 2500), ("rs 1500. kurta", None, 1500), ("under rs 1,499 kurti", None, 1499)],
+)
+def test_decimal_prices_and_trailing_full_stops(text, lo, hi):
+    q = p(text)
+    assert (q.min_price, q.max_price) == (lo, hi)
