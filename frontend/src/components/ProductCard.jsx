@@ -30,7 +30,7 @@ export function ProductImage({ product, className = '' }) {
 export function SizeTag({ size, large = false }) {
   return (
     <span
-      className={`inline-flex items-center justify-center rounded-[3px] border-2 border-ink bg-sheet font-condensed font-bold leading-none ${
+      className={`inline-flex items-center justify-center rounded-lg bg-ink font-condensed font-black leading-none text-sheet ${
         large ? 'min-w-16 px-3 py-2 text-3xl' : 'min-w-11 px-2 py-1.5 text-xl'
       }`}
     >
@@ -48,53 +48,48 @@ export default function ProductCard({ item, unit, onOpen }) {
     : null
 
   return (
-    <article className="relative flex flex-col overflow-hidden rounded-md border border-ink/15 bg-sheet transition-colors hover:border-ink/45 has-[button:focus-visible]:ring-2 has-[button:focus-visible]:ring-chalk">
-      <div className="aspect-[4/3] bg-paper/60">
-        <ProductImage product={product} />
-      </div>
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <div>
-          <p className="text-sm text-ink-soft">{product.brand}</p>
-          <h3 className="text-base leading-snug font-semibold">
-            <button
-              type="button"
-              onClick={() => onOpen(product.id)}
-              className="text-left after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
-            >
-              {product.title}
-            </button>
-          </h3>
-          <p className="mt-1">{formatPrice(product.price, product.currency)}</p>
-        </div>
-
+    <article className="group relative flex flex-col has-[button:focus-visible]:outline-3 has-[button:focus-visible]:outline-offset-4 has-[button:focus-visible]:outline-chalk">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-sheet">
+        <ProductImage product={product} className="transition-transform duration-300 group-hover:scale-[1.03]" />
         {fit && fit.score !== null && (
-          <div className="mt-auto flex flex-col gap-2 border-t border-ink/10 pt-3">
-            <div className="flex items-center gap-3">
-              <SizeTag size={fit.best_size} />
-              <div className="min-w-0">
-                <p className={`inline-block rounded-sm px-1.5 text-sm font-semibold ${TONE_CLASSES[verdict.tone]}`}>
-                  {verdict.label}
-                </p>
-                <p className="text-xs text-ink-faint">Fit score {fit.score}/100</p>
-              </div>
-            </div>
-            {dim && (
-              <FitTape
-                compact
-                dimension={dim.dimension}
-                label={dim.label}
-                bodyCm={dim.body_cm}
-                rangeCm={dim.range_cm}
-                status={dim.status}
-                note={dim.note}
-                unit={unit}
-              />
-            )}
-            <p className="text-sm text-ink-soft">{fit.summary}</p>
+          <div className="absolute top-3 left-3 flex items-center gap-2">
+            <SizeTag size={fit.best_size} />
+            <span className={`rounded-full px-2.5 py-1 text-sm font-bold ${TONE_CLASSES[verdict.tone]}`}>{verdict.label}</span>
+          </div>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col gap-2 pt-3">
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="text-sm font-semibold text-ink-soft">{product.brand}</p>
+          <p className="font-bold">{formatPrice(product.price, product.currency)}</p>
+        </div>
+        <h3 className="leading-snug font-semibold">
+          <button
+            type="button"
+            onClick={() => onOpen(product.id)}
+            className="text-left after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+          >
+            {product.title}
+          </button>
+        </h3>
+
+        {fit && fit.score !== null && dim && (
+          <div className="mt-1">
+            <FitTape
+              compact
+              dimension={dim.dimension}
+              label={dim.label}
+              bodyCm={dim.body_cm}
+              rangeCm={dim.range_cm}
+              status={dim.status}
+              note={dim.note}
+              unit={unit}
+            />
+            <p className="mt-1 text-sm text-ink-soft">{fit.summary}</p>
           </div>
         )}
         {fit && fit.score === null && (
-          <p className="mt-auto border-t border-ink/10 pt-3 text-sm text-ink-soft">
+          <p className="text-sm text-ink-soft">
             {missingLabel ? `Add your ${missingLabel} to check the fit.` : 'No size chart to check against.'}
           </p>
         )}
@@ -102,3 +97,4 @@ export default function ProductCard({ item, unit, onOpen }) {
     </article>
   )
 }
+

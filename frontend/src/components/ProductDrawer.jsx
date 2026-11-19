@@ -19,7 +19,7 @@ function SizeRows({ sizes, selected, onSelect, best }) {
               onClick={() => onSelect(row.size)}
               aria-pressed={isSel}
               className={`grid w-full grid-cols-[4.5rem_1fr_auto] items-center gap-3 px-3 py-2 text-left ${
-                isSel ? 'bg-tape/35' : 'hover:bg-paper/60'
+                isSel ? 'bg-blush/60' : 'hover:bg-paper/60'
               }`}
             >
               <span className="font-condensed text-xl leading-none font-bold">{row.size}</span>
@@ -127,7 +127,7 @@ export default function ProductDrawer({ productId, profile, unit, onClose }) {
       <div className="drawer-in relative flex h-full w-full max-w-[36rem] flex-col overflow-y-auto bg-sheet shadow-2xl">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-ink/10 bg-sheet px-5 py-3">
           <p className="text-sm text-ink-soft">{p ? p.brand : 'Loading'}</p>
-          <button ref={closeRef} type="button" onClick={onClose} className="rounded-[4px] border border-ink/25 px-3 py-1 text-sm hover:border-ink">
+          <button ref={closeRef} type="button" onClick={onClose} className="rounded-full bg-ink px-4 py-1.5 text-sm font-semibold text-sheet">
             Close
           </button>
         </div>
@@ -159,7 +159,7 @@ export default function ProductDrawer({ productId, profile, unit, onClose }) {
                     href={p.product_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-3 inline-block rounded-[4px] border-2 border-ink bg-tape px-3 py-1.5 text-sm font-semibold hover:bg-tape-deep"
+                    className="mt-3 inline-block rounded-full bg-cobalt px-5 py-2 text-sm font-bold text-sheet hover:bg-cobalt-deep"
                   >
                     View at {p.store}
                   </a>

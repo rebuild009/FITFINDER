@@ -50,13 +50,13 @@ export default function SearchBar({ value, onChange, onSubmit, parsed, applied, 
           type="search"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="What are you looking for?"
-          className="min-w-0 flex-1 rounded-[4px] border-2 border-ink bg-sheet px-3.5 py-3 text-base outline-none placeholder:text-ink-faint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chalk sm:text-lg"
+          placeholder="Search, e.g. linen shirt"
+          className="min-w-0 flex-1 rounded-full border-2 border-ink bg-sheet px-5 py-3 text-base outline-none placeholder:text-ink-faint focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-chalk sm:text-lg"
         />
         <button
           type="submit"
           disabled={busy}
-          className="rounded-[4px] border-2 border-ink bg-tape px-5 font-semibold hover:bg-tape-deep disabled:opacity-60"
+          className="rounded-full bg-cobalt px-6 font-bold text-sheet hover:bg-cobalt-deep disabled:opacity-60"
         >
           Search
         </button>

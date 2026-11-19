@@ -19,7 +19,7 @@ function Select({ label, value, onChange, children }) {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-[4px] border border-ink/25 bg-sheet py-1.5 pr-8 pl-2.5 hover:border-ink/60"
+        className="rounded-full border-2 border-ink/20 bg-sheet py-1.5 pr-8 pl-3.5 font-semibold hover:border-ink"
       >
         {children}
       </select>
@@ -27,10 +27,11 @@ function Select({ label, value, onChange, children }) {
   )
 }
 
-export default function FilterBar({ filters, onChange, categories, onlyFitting, onOnlyFitting, canFit }) {
+export default function FilterBar({ filters, onChange, categories, onlyFitting, onOnlyFitting, canFit, hideCategory = false }) {
   const set = (patch) => onChange({ ...filters, ...patch })
   return (
     <div className="flex flex-wrap items-center gap-2">
+      {!hideCategory && (
       <Select label="Category" value={filters.category} onChange={(category) => set({ category })}>
         <option value="">All clothing</option>
         {categories
@@ -41,6 +42,7 @@ export default function FilterBar({ filters, onChange, categories, onlyFitting, 
             </option>
           ))}
       </Select>
+      )}
       <Select label="Price" value={filters.max_price} onChange={(max_price) => set({ max_price })}>
         {PRICES.map((p) => (
           <option key={p.value} value={p.value}>
