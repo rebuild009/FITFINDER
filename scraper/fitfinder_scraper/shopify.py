@@ -139,7 +139,8 @@ def normalise_product(raw: dict, store: Store, report: ScrapeReport, chart_looku
         "external_id": f"shopify:{store.host}:{raw.get('handle') or raw.get('id')}",
         "source": "shopify",
         "store": store.name or store.host,
-        "brand": raw.get("vendor") or store.name or store.host,
+        # A D2C store is the brand; its "vendor" field often holds a sub-line ("XL LOVE By Janasya").
+        "brand": store.name or raw.get("vendor") or store.host,
         "title": title,
         "description": description[:600],
         "category": category,
