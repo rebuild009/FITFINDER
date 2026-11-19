@@ -23,6 +23,8 @@ different brands; FitFinder compares measurements, not labels.
   available with `CATALOG=demo`.
 - **Evaluation on real data**: True-Fit run on 6,068 real bodies (ANSUR II) against all 1,722 products
   and their brand charts. See [docs/real_evaluation.md](docs/real_evaluation.md).
+- **Browser version**: the same app running entirely in the browser (Python via Pyodide), shareable as a
+  link. See [browser-demo/README.md](browser-demo/README.md).
 - **Web app**: React + Tailwind, with a measurement card, search, fit-ranked results, and a per-size
   breakdown drawn as measuring tape.
 
