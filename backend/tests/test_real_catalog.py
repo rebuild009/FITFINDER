@@ -17,10 +17,19 @@ def test_every_real_product_is_valid(products):
     assert [p["title"] for p in products if validate(p)] == []
 
 
-def test_real_catalog_uses_brand_charts(products):
-    brand = sum(p["size_chart"]["source"] == "brand" for p in products)
-    assert brand / len(products) > 0.95
-    assert {p["store"] for p in products} == {"bigbanana", "Janasya", "Angrakhaa"}
+STORES = {"bigbanana", "Janasya", "Angrakhaa", "Instafab Plus", "My Designation", "Nobero",
+          "Blackberrys", "Jaywalking", "Bluorng"}
+
+
+def test_real_catalog_uses_only_brand_charts(products):
+    assert all(p["size_chart"]["source"] == "brand" for p in products)
+    assert {p["store"] for p in products} == STORES
+    assert all(p["brand"] == p["store"] for p in products)
+
+
+def test_men_range_from_xxs_to_10xl(products):
+    labels = {r["label"] for p in products if p["gender"] != "women" for r in p["size_chart"]["sizes"]}
+    assert {"XXS", "XS", "6XL", "10XL"} <= labels
 
 
 def test_search_on_real_catalog(client, monkeypatch):
@@ -35,5 +44,5 @@ def test_search_on_real_catalog(client, monkeypatch):
     r = client.post("/api/search", json={"query": "tshirt for 54 inch chest under 1500"}).json()
     assert r["parsed"]["measurements"] == {"chest": 137.2}
     top = r["items"][0]
-    assert top["product"]["brand"].lower() == "bigbanana"
-    assert top["fit"]["best_size"] in ("3XL", "4XL")  # bigbanana tshirt chart: 3XL 130.5-137, 4XL 137-143.5
+    assert top["product"]["brand"] in ("bigbanana", "Instafab Plus")  # the two plus-size men's brands
+    assert top["fit"]["best_size"] in ("3XL", "4XL", "5XL") and top["fit"]["score"] >= 90

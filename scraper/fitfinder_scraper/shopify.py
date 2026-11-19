@@ -30,7 +30,8 @@ class Store:
     currency: str = "INR"
     max_pages: int = 4
     tags: list[str] = field(default_factory=list)  # e.g. ["plus-size"] for a plus-size store
-    charts: str | None = None  # where the brand publishes size charts: "script" or "kiwi" (see brand_charts.py)
+    charts: str | None = None  # where the brand publishes size charts: script, kiwi, page or variant (see brand_charts.py)
+    measures: str | None = None  # "garment" if the brand's chart gives garment, not body, measurements
 
     @property
     def base(self) -> str:
@@ -168,7 +169,7 @@ def scrape_store(store: Store, client: httpx.Client | None = None, delay_s: floa
         raw = fetch_products(client, store, delay_s)
         lookup = None
         if store.charts:
-            lookup = PROVIDERS[store.charts](client, store.base, raw, delay_s)
+            lookup = PROVIDERS[store.charts](client, store.base, raw, delay_s, store.measures)
         report.fetched = len(raw)
         items = [p for p in (normalise_product(r, store, report, lookup) for r in raw) if p]
     finally:

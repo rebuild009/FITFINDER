@@ -42,7 +42,15 @@ def _has(text: str, word: str) -> bool:
     return re.search(rf"(?<![a-z]){re.escape(word)}s?(?![a-z])", text) is not None
 
 
+# "Tee dress", "shirt dress", "kurta dress" are dresses; "dress shirt" stays a shirt.
+DRESS_STYLE = re.compile(r"\b(?:tee|t-shirt|tshirt|shirt|kurta|kurti|sweater|sweatshirt|hoodie|polo)\s+dress(?:es)?\b", re.I)
+
+
 def category_of(title: str, product_type: str, tags: list[str]) -> str | None:
+    if DRESS_STYLE.search(f"{title} {product_type}"):
+        return "dress"
+    if re.search(r"\bdress\s+shirts?\b", f"{title} {product_type}", re.I):
+        return "shirt"
     # Product type is the most reliable signal, then the title, then tags.
     for text in (product_type, title, " ".join(tags)):
         text = (text or "").lower()
