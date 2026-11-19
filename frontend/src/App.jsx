@@ -237,7 +237,7 @@ export default function App() {
       </div>
 
       <footer className="mt-16 border-t border-ink/15 pt-4 text-sm text-ink-faint">
-        FitFinder. Products and size charts come from real Indian stores (bigbanana, Janasya, Angrakhaa); prices and stock may have changed since they were collected.
+        FitFinder. Products and size charts come from 9 real Indian brands; prices and stock may have changed since they were collected.
       </footer>
 
       {openId !== null && (

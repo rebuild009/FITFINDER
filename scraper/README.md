@@ -14,8 +14,9 @@ pip install -r requirements.txt
 # one store
 python -m fitfinder_scraper --store somebrand.com --name "Some Brand" --gender women --tag plus-size
 
-# the three real stores behind the bundled catalog
-python -m fitfinder_scraper --config stores.india.json
+# the nine real stores behind the bundled catalog, then build the catalog the backend ships with
+python -m fitfinder_scraper --config stores.india.json --out output
+python -m fitfinder_scraper.catalog output/*.json -o ../backend/data/real_catalog.json
 
 # or several, from a config file
 cp stores.example.json stores.json   # edit the list
@@ -35,10 +36,16 @@ Each run prints how many products were kept, where each size chart came from, an
 3. **Size chart** (what True-Fit compares against):
    - **product**: a `<table>` in the product description is parsed, in either orientation. It handles inches or cm, ranges or single values, and garment or "pit to pit" measurements. Garment measurements are converted to body measurements by subtracting typical ease.
    - **brand**: the brand's own chart for the product's category, read from where the store keeps it.
-     Set `"charts"` on a store in the config: `"script"` for themes that embed a chart in the page
-     (bigbanana), `"kiwi"` for stores using the Kiwi Sizing app (Janasya, Angrakhaa). For Kiwi stores
-     the scraper makes the same public chart request the product page makes, one product at a time
-     with a pause. See `fitfinder_scraper/brand_charts.py`.
+     Set `"charts"` on a store in the config:
+     - `"script"`: the theme embeds a chart in the page (bigbanana)
+     - `"kiwi"`: the store uses the Kiwi Sizing app (Janasya, Angrakhaa, My Designation, Blackberrys);
+       the scraper makes the same public chart request the product page makes
+     - `"page"`: a size table printed on each product page (Instafab Plus, Jaywalking, Bluorng)
+     - `"variant"`: the page shows one size's chart at a time (Nobero); one request per size
+
+     Every provider works one request at a time with a pause. Add `"measures": "garment"` when a brand's
+     chart lists garment rather than body measurements; standard ease is then subtracted.
+     See `fitfinder_scraper/brand_charts.py`.
    - **standard**: if there's no table, a generic chart is mapped onto the product's labels (`XL`, `2XL`, `34/32`...). The app shows these fits as lower confidence.
    - Products whose sizes can't be mapped at all (e.g. "Free Size") are skipped.
 4. **Gender, colours, materials** from tags, options and text, with the store's `gender` as the default.

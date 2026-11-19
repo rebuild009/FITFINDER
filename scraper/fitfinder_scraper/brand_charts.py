@@ -9,7 +9,15 @@ Two kinds of store are covered:
   chart that matches it; we make the same public request the page makes, one product
   at a time with a pause, and cache by chart id.
 
-Both return charts in the scraper's usual format with source "brand", which the
+* **page**: the theme prints a size table on each product page (Instafab Plus, Jaywalking,
+  Bluorng). One page request per product, with a pause.
+* **variant**: the page shows the chart for the selected size only, as "Label value" pairs
+  (Nobero). One request per size of the product (one colour), with a pause.
+
+A store can say its chart lists garment measurements (`"measures": "garment"` in the config);
+those are turned into body ranges by subtracting standard ease (charts._EASE).
+
+All return charts in the scraper's usual format with source "brand", which the
 backend shows as medium confidence (a real brand chart, but per category, not per item).
 """
 
@@ -24,7 +32,7 @@ from typing import Callable
 import httpx
 from bs4 import BeautifulSoup
 
-from .charts import chart_from_rows
+from .charts import _EASE, CM, chart_from_rows
 from .sizes import normalise
 
 log = logging.getLogger(__name__)
@@ -74,7 +82,8 @@ _BY_CATEGORY = {"tshirt": "tshirt", "polo": "tshirt", "hoodie": "tshirt", "shirt
                 "jacket": "shirt", "joggers": "trackpants", "shorts": "trackpants", "jeans": "trouser", "trousers": "trouser"}
 
 
-def script_lookup(client: httpx.Client, base: str, raw_products: list[dict], delay_s: float = 1.0) -> ChartLookup | None:
+def script_lookup(client: httpx.Client, base: str, raw_products: list[dict], delay_s: float = 1.0,
+                  measures: str | None = None) -> ChartLookup | None:
     if not raw_products:
         return None
     r = client.get(f"{base}/products/{raw_products[0]['handle']}")
@@ -122,7 +131,7 @@ def _kiwi_table_rows(table: dict) -> tuple[list[list[str]], str | None]:
     return rows, unit
 
 
-def kiwi_chart(payload: dict, category: str) -> tuple[int | None, dict | None]:
+def kiwi_chart(payload: dict, category: str, measures: str | None = None) -> tuple[int | None, dict | None]:
     """Pick the first enabled sizing whose table parses; return (sizing id, chart)."""
     for sizing in payload.get("sizings", []):
         if not sizing.get("isEnabled", True):
@@ -131,7 +140,7 @@ def kiwi_chart(payload: dict, category: str) -> tuple[int | None, dict | None]:
         tables = list((sizing.get("tables") or {}).values())
         for table in tables:
             context = f"{table.get('header', '')} {table.get('footer', '')} {text}"
-            garment = bool(_GARMENT_HINT.search(context)) and not _BODY_HINT.search(context)
+            garment = measures == "garment" if measures else bool(_GARMENT_HINT.search(context)) and not _BODY_HINT.search(context)
             rows, unit = _kiwi_table_rows(table)
             chart = chart_from_rows(rows, category, context, garment=garment, unit=unit, source="brand")
             if chart:
@@ -139,7 +148,8 @@ def kiwi_chart(payload: dict, category: str) -> tuple[int | None, dict | None]:
     return None, None
 
 
-def kiwi_lookup(client: httpx.Client, base: str, raw_products: list[dict], delay_s: float = 1.0) -> ChartLookup | None:
+def kiwi_lookup(client: httpx.Client, base: str, raw_products: list[dict], delay_s: float = 1.0,
+                measures: str | None = None) -> ChartLookup | None:
     shop = kiwi_shop(client, base)
     if not shop:
         log.warning("could not find the Kiwi shop id on %s", base)
@@ -163,11 +173,93 @@ def kiwi_lookup(client: httpx.Client, base: str, raw_products: list[dict], delay
         ids = tuple(s.get("id") for s in payload.get("sizings", []))
         key = (ids, category)
         if key not in cache:
-            cache[key] = kiwi_chart(payload, category)[1]
+            cache[key] = kiwi_chart(payload, category, measures)[1]
         chart = cache[key]
         return json.loads(json.dumps(chart)) if chart else None
 
     return lookup
 
 
-PROVIDERS = {"script": script_lookup, "kiwi": kiwi_lookup}
+# ---------------------------------------------------------------- tables printed on the product page
+
+def page_chart(html: str, category: str, measures: str | None = None) -> dict | None:
+    soup = BeautifulSoup(html, "html.parser")
+    for table in soup.find_all("table"):
+        rows = [[c.get_text(" ", strip=True) for c in tr.find_all(["td", "th"])] for tr in table.find_all("tr")]
+        # the heading or note just before the table often says "to fit" or "garment measurement"
+        before = " ".join(e.get_text(" ", strip=True) for e in table.find_all_previous(["h2", "h3", "h4", "p", "strong"], limit=3))
+        context = f"{before} {table.get_text(' ', strip=True)}"
+        if measures:
+            garment = measures == "garment"
+        else:
+            garment = bool(_GARMENT_HINT.search(context)) and not re.search(r"to\s+fit", context, re.I)
+        chart = chart_from_rows(rows, category, context, garment=garment, source="brand")
+        if chart:
+            return chart
+    return None
+
+
+def page_lookup(client: httpx.Client, base: str, raw_products: list[dict], delay_s: float = 1.0,
+                measures: str | None = None) -> ChartLookup | None:
+    def lookup(raw: dict, category: str) -> dict | None:
+        try:
+            r = client.get(f"{base}/products/{raw['handle']}")
+            time.sleep(delay_s)
+        except httpx.HTTPError:
+            return None
+        return page_chart(r.text, category, measures) if r.status_code == 200 else None
+
+    return lookup
+
+
+# ---------------------------------------------------------------- one size at a time (Nobero)
+
+_PAIR = re.compile(r">\s*((?:To Fit )?[A-Za-z ]{3,20}?)\s*</span>\s*<span[^>]*>\s*([\d.]+)\s*<", re.I)
+_VARIANT_DIMS = {"chest": "chest", "waist": "waist", "hip": "hips", "hips": "hips", "shoulder": "shoulder", "inseam": "inseam"}
+
+
+def variant_measurements(html: str) -> dict[str, float]:
+    """{dim: body cm} from 'Chest 41 / To Fit Chest 38 / Shoulder 17.4' pairs (inches). "To fit" wins over garment."""
+    garment, body = {}, {}
+    for label, value in _PAIR.findall(html):
+        label = label.strip().lower()
+        fit = label.startswith("to fit ")
+        dim = _VARIANT_DIMS.get(label.removeprefix("to fit ").strip())
+        if dim:
+            (body if fit else garment).setdefault(dim, float(value) * CM)
+    out = {d: v - _EASE[d] for d, v in garment.items()}
+    out.update(body)
+    return out
+
+
+def variant_lookup(client: httpx.Client, base: str, raw_products: list[dict], delay_s: float = 1.0,
+                   measures: str | None = None) -> ChartLookup | None:
+    def lookup(raw: dict, category: str) -> dict | None:
+        size_opt = next((i for i, o in enumerate(raw.get("options", [])) if o.get("name", "").lower() in ("size", "sizes")), None)
+        if size_opt is None:
+            return None
+        seen, points = set(), []
+        for v in raw.get("variants", []):  # first variant of each size, so one colour's worth of requests
+            label = normalise(v.get(f"option{size_opt + 1}") or "")
+            if not label or label in seen:
+                continue
+            seen.add(label)
+            try:
+                r = client.get(f"{base}/products/{raw['handle']}", params={"variant": v["id"]})
+                time.sleep(delay_s)
+            except httpx.HTTPError:
+                continue
+            m = variant_measurements(r.text) if r.status_code == 200 else {}
+            if m:
+                points.append((label, m))
+        if len(points) < 2:
+            return None
+        # each size is one point; make ranges that meet halfway, like single-value tables
+        rows = [["Size", *sorted({d for _, m in points for d in m})]]
+        rows += [[label] + [f"{m.get(d, ''):.1f}" if d in m else "" for d in rows[0][1:]] for label, m in points]
+        return chart_from_rows(rows, category, "cm", garment=False, unit="cm", source="brand")
+
+    return lookup
+
+
+PROVIDERS = {"script": script_lookup, "kiwi": kiwi_lookup, "page": page_lookup, "variant": variant_lookup}

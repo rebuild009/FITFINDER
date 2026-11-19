@@ -76,7 +76,8 @@ export default function FitTape({ dimension, label, bodyCm, rangeCm, status, not
               strokeOpacity={isMajor ? 0.85 : 0.5}
               strokeWidth={isMajor ? 1.1 : 0.8}
             />
-            {isLabel && !compact && x(v) > 8 && x(v) < W - 8 && (
+            {/* skip a number the 'you' marker would cover */}
+            {isLabel && !compact && x(v) > 8 && x(v) < W - 8 && Math.abs(x(v) - x(body)) > 11 && (
               <text x={x(v)} y={tapeTop + tapeH - 4} textAnchor="middle" fontSize="8.5" fill="var(--color-ink)" fillOpacity="0.8">
                 {Math.round(v)}
               </text>

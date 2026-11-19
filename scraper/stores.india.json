@@ -1,7 +1,85 @@
 {
   "stores": [
-    {"domain": "bigbananaonline.com", "name": "bigbanana", "gender": "men", "max_pages": 1, "tags": ["plus-size"], "charts": "script"},
-    {"domain": "janasya.com", "name": "Janasya", "gender": "women", "max_pages": 1, "tags": [], "charts": "kiwi"},
-    {"domain": "www.angrakhaa.com", "name": "Angrakhaa", "gender": "women", "max_pages": 1, "tags": ["plus-size"], "charts": "kiwi"}
+    {
+      "domain": "bigbananaonline.com",
+      "name": "bigbanana",
+      "gender": "men",
+      "max_pages": 1,
+      "tags": [
+        "plus-size"
+      ],
+      "charts": "script"
+    },
+    {
+      "domain": "janasya.com",
+      "name": "Janasya",
+      "gender": "women",
+      "max_pages": 1,
+      "tags": [],
+      "charts": "kiwi"
+    },
+    {
+      "domain": "www.angrakhaa.com",
+      "name": "Angrakhaa",
+      "gender": "women",
+      "max_pages": 1,
+      "tags": [
+        "plus-size"
+      ],
+      "charts": "kiwi"
+    },
+    {
+      "domain": "instafabplus.com",
+      "name": "Instafab Plus",
+      "gender": "men",
+      "max_pages": 1,
+      "tags": [
+        "plus-size"
+      ],
+      "charts": "page"
+    },
+    {
+      "domain": "www.mydesignation.com",
+      "name": "My Designation",
+      "gender": "men",
+      "max_pages": 1,
+      "tags": [],
+      "charts": "kiwi"
+    },
+    {
+      "domain": "nobero.com",
+      "name": "Nobero",
+      "gender": "men",
+      "max_pages": 1,
+      "tags": [],
+      "charts": "variant"
+    },
+    {
+      "domain": "www.blackberrys.com",
+      "name": "Blackberrys",
+      "gender": "men",
+      "max_pages": 1,
+      "tags": [],
+      "charts": "kiwi",
+      "measures": "garment"
+    },
+    {
+      "domain": "www.jaywalking.in",
+      "name": "Jaywalking",
+      "gender": "men",
+      "max_pages": 1,
+      "tags": [],
+      "charts": "page",
+      "measures": "garment"
+    },
+    {
+      "domain": "www.bluorng.com",
+      "name": "Bluorng",
+      "gender": "men",
+      "max_pages": 1,
+      "tags": [],
+      "charts": "page",
+      "measures": "garment"
+    }
   ]
 }
