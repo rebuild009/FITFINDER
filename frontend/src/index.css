@@ -3,21 +3,24 @@
 @theme {
   --font-sans: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, sans-serif;
 
-  --color-paper: #EBEFE8;        /* pattern-paper background */
-  --color-paper-line: #D7DED2;   /* grid lines on the paper */
-  --color-sheet: #FFFFFF;        /* panels */
-  --color-ink: #1B2140;          /* text and strokes */
-  --color-ink-soft: #4A5070;     /* secondary text */
-  --color-ink-faint: #7C8199;    /* tertiary text */
-  --color-tape: #F4C542;         /* tape-measure yellow */
-  --color-tape-deep: #D9A514;
-  --color-chalk: #3F5FD0;        /* focus, links */
-  --color-fit: #1F7A4D;          /* true fit / good */
-  --color-fit-bg: #E0F0E6;
-  --color-ok: #A85F0F;           /* fits with a compromise */
-  --color-ok-bg: #F8EAD3;
-  --color-no: #B0392B;           /* won't fit */
-  --color-no-bg: #F6DEDA;
+  --color-paper: #F6F4FB;        /* cool off-white page */
+  --color-paper-line: #E4E0F0;
+  --color-sheet: #FFFFFF;        /* panels, cards */
+  --color-ink: #1E1A4D;          /* deep indigo text and strokes */
+  --color-ink-soft: #4B4775;
+  --color-ink-faint: #7E7AA3;
+  --color-cobalt: #2F3BFF;       /* the brand block */
+  --color-cobalt-deep: #1F28C9;
+  --color-blush: #FFC2D9;        /* results header block */
+  --color-tape: #FFC93C;         /* measuring-tape saffron, only on fit tapes and progress */
+  --color-tape-deep: #E0A800;
+  --color-chalk: #2F3BFF;        /* focus, links */
+  --color-fit: #127A4F;
+  --color-fit-bg: #DDF2E7;
+  --color-ok: #A0590C;
+  --color-ok-bg: #FBEBD3;
+  --color-no: #B3261E;
+  --color-no-bg: #F9DEDC;
 }
 
 @layer base {
@@ -28,18 +31,14 @@
     line-height: 1.5;
     color: var(--color-ink);
     background-color: var(--color-paper);
-    /* faint pattern-paper grid, 1 cm-ish squares */
-    background-image:
-      linear-gradient(var(--color-paper-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--color-paper-line) 1px, transparent 1px);
-    background-size: 38px 38px;
     -webkit-font-smoothing: antialiased;
     font-variant-numeric: tabular-nums;
   }
   body { margin: 0; min-height: 100svh; }
-  :focus-visible { outline: 2px solid var(--color-chalk); outline-offset: 2px; border-radius: 3px; }
+  :focus-visible { outline: 3px solid var(--color-chalk); outline-offset: 2px; border-radius: 2px; }
+  .on-cobalt :focus-visible { outline-color: var(--color-tape); }
   input, select, button, textarea { font: inherit; color: inherit; }
-  ::selection { background: var(--color-tape); color: var(--color-ink); }
+  ::selection { background: var(--color-blush); color: var(--color-ink); }
 }
 
 @utility font-expanded { font-stretch: 125%; }
@@ -50,9 +49,29 @@
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 
-/* The detail drawer slides in when someone opens a product. */
+/* The detail drawer and the measurement sheet slide in when opened. */
 @keyframes drawer-in {
   from { transform: translateX(24px); opacity: 0; }
   to { transform: none; opacity: 1; }
 }
 .drawer-in { animation: drawer-in 180ms ease-out; }
+
+/* Home: the size ladder. Each label is set wider than the one before, so the type grows like the sizes.
+   It plays once on load, label by label; that is the page's one motion. */
+@keyframes rung-in {
+  from { opacity: 0; transform: translateY(0.25em); }
+  to { opacity: 1; transform: none; }
+}
+.rung { display: inline-block; animation: rung-in 420ms cubic-bezier(.2, .7, .2, 1) both; }
+
+/* Quiz: a new question slides in when the shopper moves forward or back. */
+@keyframes step-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.step-in { animation: step-in 220ms ease-out; }
+
+/* Number inputs: no spinners; the quiz has its own large input. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }

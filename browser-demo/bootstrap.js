@@ -12,9 +12,9 @@
     '<small>The real FitFinder backend runs inside this page. First load takes about 10–20 seconds.</small></div>'
   const style = document.createElement('style')
   style.textContent = `#ff-boot{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
-    background:#eceee6;font:16px/1.4 system-ui,sans-serif;color:#1a2140}
+    background:#2F3BFF;font:16px/1.4 system-ui,sans-serif;color:#fff}
     #ff-boot div{display:flex;flex-direction:column;gap:6px;max-width:340px;padding:24px;text-align:center}
-    #ff-boot strong{font-size:20px} #ff-boot small{color:#5b6177} #ff-boot.err{color:#a3261c}`
+    #ff-boot strong{font-size:22px} #ff-boot small{color:rgba(255,255,255,.8)} #ff-boot.err{background:#1E1A4D}`
   const step = (t) => { const e = document.getElementById('ff-boot-step'); if (e) e.textContent = t }
   document.addEventListener('DOMContentLoaded', () => { document.head.append(style); document.body.append(overlay) })
 

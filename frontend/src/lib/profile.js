@@ -1,6 +1,26 @@
 import { CM_PER_IN, round1 } from './units'
 
 const KEY = 'fitfinder.profile.v1'
+const INTENT_KEY = 'fitfinder.intent.v1'
+
+// What the shopper is after, from the last quiz step: a category and a budget.
+export const emptyIntent = () => ({ category: '', max_price: '' })
+
+export function loadIntent() {
+  try {
+    return { ...emptyIntent(), ...JSON.parse(localStorage.getItem(INTENT_KEY) || '{}') }
+  } catch {
+    return emptyIntent()
+  }
+}
+
+export function saveIntent(intent) {
+  try {
+    localStorage.setItem(INTENT_KEY, JSON.stringify(intent))
+  } catch {
+    /* storage unavailable: fine for this visit */
+  }
+}
 
 export const DIMENSIONS = [
   { key: 'chest', label: 'Chest / bust', hint: 'Around the fullest part, under the arms' },

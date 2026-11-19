@@ -6,11 +6,11 @@ function Segmented({ label, value, options, onChange }) {
   return (
     <fieldset className="min-w-0">
       <legend className="mb-1 text-sm text-ink-soft">{label}</legend>
-      <div className="flex rounded-[4px] border border-ink/25 bg-paper/50 p-0.5">
+      <div className="flex rounded-full border border-ink/20 bg-paper/50 p-0.5">
         {options.map((o) => (
           <label
             key={String(o.value)}
-            className={`flex-1 cursor-pointer rounded-[3px] px-2 py-1.5 text-center text-sm select-none has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-chalk ${
+            className={`flex-1 cursor-pointer rounded-full px-2 py-1.5 text-center text-sm select-none has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-chalk ${
               value === o.value ? 'bg-ink font-semibold text-sheet' : 'text-ink hover:bg-sheet'
             }`}
           >
@@ -39,7 +39,7 @@ function MeasurementField({ dim, value, unit, onChange }) {
       <label htmlFor={id} className="block text-sm font-medium">
         {dim.label}
       </label>
-      <div className="mt-1 flex items-center rounded-[4px] border border-ink/25 bg-sheet focus-within:border-ink focus-within:outline-2 focus-within:outline-chalk">
+      <div className="mt-1 flex items-center rounded-xl border border-ink/20 bg-sheet focus-within:border-ink focus-within:outline-2 focus-within:outline-chalk">
         <input
           id={id}
           inputMode="decimal"
@@ -62,14 +62,14 @@ function MeasurementField({ dim, value, unit, onChange }) {
   )
 }
 
-export default function ProfileCard({ profile, onChange }) {
-  const [open, setOpen] = useState(false)
+export default function ProfileCard({ profile, onChange, alwaysOpen = false }) {
+  const [open, setOpen] = useState(alwaysOpen)
   const filled = filledMeasurements(profile)
   const count = Object.keys(filled).length
   const setMeasurement = (key, v) => onChange({ ...profile, measurements: { ...profile.measurements, [key]: v } })
 
   return (
-    <section aria-labelledby="profile-title" className="rounded-md border border-ink/20 bg-sheet">
+    <section aria-labelledby="profile-title" className="rounded-2xl border border-ink/15 bg-sheet">
       <header className="flex items-center justify-between gap-3 border-b border-ink/10 px-4 py-3">
         <div>
           <h2 id="profile-title" className="font-expanded text-lg font-bold">
@@ -79,15 +79,17 @@ export default function ProfileCard({ profile, onChange }) {
             {count ? `${count} of 6 added. Saved on this device.` : 'Add them once. Every result is checked against them.'}
           </p>
         </div>
+        {!alwaysOpen && (
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           aria-controls="profile-body"
-          className="shrink-0 rounded-[4px] border border-ink/25 px-2.5 py-1 text-sm lg:hidden"
+          className="shrink-0 rounded-full border border-ink/25 px-3 py-1 text-sm lg:hidden"
         >
           {open ? 'Hide' : count ? 'Edit' : 'Add'}
         </button>
+        )}
       </header>
 
       <div id="profile-body" className={`${open ? 'block' : 'hidden'} space-y-4 px-4 py-4 lg:block`}>
@@ -137,7 +139,7 @@ export default function ProfileCard({ profile, onChange }) {
                 key={s.key}
                 type="button"
                 onClick={() => onChange(convertProfile({ ...emptyProfile(), ...s.profile }, profile.unit))}
-                className="rounded-[4px] border border-ink/20 px-2.5 py-1.5 text-left hover:border-ink/60 hover:bg-paper/60"
+                className="rounded-xl border border-ink/20 px-3 py-1.5 text-left hover:border-ink/60 hover:bg-paper/60"
               >
                 <span className="block text-sm font-semibold">{s.label}</span>
                 <span className="block text-xs text-ink-soft">{s.detail}</span>
